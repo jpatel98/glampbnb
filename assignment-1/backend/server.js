@@ -28,14 +28,16 @@ app.get("/rentals", (req, res) => {
 });
 
 // Route handler for the registration page ("/sign-up")
-app.get("/sign-up", (req, res) => {
+app.get("/signup", (req, res) => {
     res.send("Sign up for our service here.");
 });
 
 // Route handler for the login page ("/log-in")
-app.get("/log-in", (req, res) => {
+app.get("/login", (req, res) => {
     res.send("Log in to your account.");
 });
+
+// *** DO NOT MODIFY THE LINES BELOW ***
 
 // This use() will not allow requests to go beyond it
 // so we place it at the end of the file, after the other routes.
@@ -57,7 +59,7 @@ app.use(function (err, req, res, next) {
 function onHttpStart() {
     console.log("Express http server listening on: " + HTTP_PORT);
 }
-  
+
 // Listen on port 8080. The default port for http is 80, https is 443. We use 8080 here
 // because sometimes port 80 is in use by other applications on the machine
 app.listen(HTTP_PORT, onHttpStart);
