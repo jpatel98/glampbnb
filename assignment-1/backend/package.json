@@ -1,7 +1,7 @@
 {
-  "name": "lakebnb-server",
+  "name": "glampbnb-server",
   "version": "1.0.0",
-  "description": "Server for lakebnb app",
+  "description": "Server for glampbnb app",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
