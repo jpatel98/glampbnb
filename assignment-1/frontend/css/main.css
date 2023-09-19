@@ -1,0 +1,135 @@
+/* Hero Section CSS */
+.hero {
+  background-color: #fefaf5;
+  min-height: 50vh;
+  padding: 5rem 3rem;
+  width: 100%;
+}
+
+.hero__container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 4rem;
+}
+
+.hero__title {
+  width: 50%;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  color: #335576;
+}
+.hero__title > h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+.hero__img > img {
+  height: 20rem;
+  margin-right: 5rem;
+}
+.hero__button {
+  width: 10rem;
+  border-radius: 2rem;
+  padding: 0.75rem;
+  color: white;
+  background-color: #db7a4e;
+  cursor: pointer;
+}
+
+/* recommended Rentals Section CSS */
+.recommended-rentals {
+  background-color: #fff;
+  padding: 3rem;
+  min-height: 75vh;
+}
+
+.recommended__title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #335576;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.recommended__container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.recommended__item {
+  width: calc(33.33% - 20px); /* Three items in a row with spacing */
+  background-color: #f2f2f2;
+  border-radius: 5px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.recommended__item:hover {
+  transform: scale(1.02);
+}
+
+.recommended__item img {
+  max-width: 100%;
+  height: auto;
+}
+
+.recommended__item h3 {
+  font-size: 1.25rem;
+  margin: 10px 0;
+}
+
+.recommended__item p {
+  font-size: 1rem;
+  margin: 5px 0;
+}
+
+/* Features Section CSS */
+.features {
+  background-color: #fefaf5;
+  padding: 1.5rem;
+  min-height: 45vh;
+}
+
+.features__title {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.features__title h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #335576;
+}
+
+.features__container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  justify-content: center;
+}
+
+.feature {
+  text-align: center;
+}
+
+.feature img {
+  height: 5rem;
+}
+
+.feature h3 {
+  font-size: 1.5rem;
+  color: #335576;
+  margin-bottom: 0.5rem;
+}
+
+.feature p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
