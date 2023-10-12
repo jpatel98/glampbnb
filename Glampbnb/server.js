@@ -47,7 +47,7 @@ app.get("/signup", (req, res) => {
 
 // Route handler for the login page ("/log-in")
 app.get("/login", (req, res) => {
-    res.send("Log in to your account.");
+    res.render("main", { content: "login" });
 });
 
 

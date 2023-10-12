@@ -1,3 +1,15 @@
+<!-- /*************************************************************************************
+ * WEB322 - 2237 Project
+ * I declare that this assignment is my own work in accordance with the Seneca Academic
+ * Policy. No part of this assignment has been copied manually or electronically from
+ * any other source (including web sites) or distributed to other students.
+ *
+ * Student Name  : Jigar Patel
+ * Student ID    : 118005172
+ * Course/Section: WEB322 NEE
+ *
+ **************************************************************************************/ -->
+ 
 <!-- Navigation Bar -->
 <nav class="navbar">
   <div class="navbar__container">
@@ -10,11 +22,17 @@
     <div class="navbar__menu">
       <ul class="navbar__menu__list">
         <li class="navbar__list">
-          <a href="/" class="active-page">Home</a>
+          <a href="/" class="<%= content === 'home' ? 'active-page' : '' %>">Home</a>
         </li>
-        <li class="navbar__list"><a href="/rentals">Rentals</a></li>
-        <li class="navbar__list"><a href="/signup">Signup</a></li>
-        <li class="navbar__list"><a href="/login">Login</a></li>
+        <li class="navbar__list">
+          <a href="/rentals" class="<%= content === 'rentals' ? 'active-page' : '' %>">Rentals</a>
+        </li>
+        <li class="navbar__list">
+          <a href="/signup" class="<%= content === 'sign-up' ? 'active-page' : '' %>">Signup</a>
+        </li>
+        <li class="navbar__list">
+          <a href="/login" class="<%= content === 'login' ? 'active-page' : '' %>">Login</a>
+        </li>
       </ul>
     </div>
   </div>

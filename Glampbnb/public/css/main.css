@@ -15,7 +15,7 @@
 }
 
 .hero__title {
-  width: 50%;
+  width: auto;
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
@@ -26,6 +26,7 @@
   font-weight: bold;
   margin-bottom: 0;
 }
+
 .hero__img > img {
   height: 20rem;
   margin-right: 5rem;
@@ -116,6 +117,7 @@
 .recommended__item p {
   font-size: 1rem;
   margin: 5px 0;
+  text-align: left;
 }
 
 /* Media query for smaller screens */
