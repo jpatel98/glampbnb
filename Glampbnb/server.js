@@ -11,31 +11,45 @@
 **************************************************************************************/
 
 const path = require("path");
+const rentalsDb = require("./models/rentals-db");
 const express = require("express");
 const app = express();
+
+// Set EJS as the view engine
+app.set("view engine", "ejs");
+app.use(express.static(__dirname + '/public'));
 
 // Define a port to listen to requests on.
 const HTTP_PORT = process.env.PORT || 8080;
 
 // Route handler for the home page ("/")
 app.get("/", (req, res) => {
-    res.send("Welcome to the home page!");
+    // Fetch the featured rentals from the rentals-db module
+    const featuredRentals = rentalsDb.getFeaturedRentals();
+
+    // Render the 'main.ejs' template and pass the featured rentals / features for home page
+    res.render("main", { content: "home", featuredRentals });
 });
 
 // Route handler for the rentals page ("/rentals")
 app.get("/rentals", (req, res) => {
-    res.send("Browse our listings here.");
+    const allRentals = rentalsDb.getRentalsByCityAndProvince();
+
+    // Render the 'main.ejs' template and pass rental data for the rentals page
+    res.render("main", { content: "rentals", allRentals });
+
 });
 
 // Route handler for the registration page ("/sign-up")
 app.get("/signup", (req, res) => {
-    res.send("Sign up for our service here.");
+    res.render("main", { content: "sign-up" });
 });
 
 // Route handler for the login page ("/log-in")
 app.get("/login", (req, res) => {
     res.send("Log in to your account.");
 });
+
 
 // *** DO NOT MODIFY THE LINES BELOW ***
 

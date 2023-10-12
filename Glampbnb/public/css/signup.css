@@ -1,0 +1,69 @@
+/* Style for the signup container */
+.signup-container {
+    max-width: 400px;
+    margin: 12rem auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Style for the centered content (h1 and form elements) */
+.centered-content {
+    text-align: center;
+}
+
+.signup-container h1 {
+    color: #333;
+}
+
+/* Style for form elements */
+.form-group {
+    margin-bottom: 15px;
+    text-align: left; /* Align form elements to the left */
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Style for the centered button */
+.centered-button {
+    text-align: center; /* Center the button horizontally */
+}
+
+.btn {
+    background-color: #007BFF;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Style for the login link */
+p {
+    text-align: center;
+    margin-top: 15px;
+}
+
+a {
+    text-decoration: none;
+    color: #007BFF;
+}
+
+/* Hover effect for the "Sign Up" button */
+.btn:hover {
+    background-color: #0056b3;
+}
