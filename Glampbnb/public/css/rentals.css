@@ -3,6 +3,7 @@
 /* Style the rental listings section */
 .rentals-container{
     padding: 10rem 3rem 3rem 3rem;
+    color: hsl(203, 44%, 28%);
 }
 .rentals-headline{
     text-align: center;

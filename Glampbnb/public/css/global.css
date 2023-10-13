@@ -2,6 +2,7 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  font-family: Verdana, sans-serif;
 }
 body {
   margin: 0;
@@ -84,7 +85,7 @@ body {
 /* Footer */
 .footer {
   background-color: #335576;
-  color: #fefaf5;
+  color: #ffffff;
   padding: 2rem 0;
 }
 
@@ -169,5 +170,6 @@ body {
   .footer__copyright {
     font-size: 0.7rem; /* Adjust copyright font size for smaller screens */
     margin-top: 1rem;
+    color: black;
   }
 }
