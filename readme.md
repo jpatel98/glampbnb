@@ -4,8 +4,8 @@ I declare that this assignment is my own work in accordance with the Seneca Acad
 No part of this assignment has been copied manually or electronically from any other source
 (including web sites) or distributed to other students.
 
-Student Name  : Jigar Patel
-Student Email : jdpatel22@myseneca,ca
+Student Name  : Jigar Patel <br>
+Student Email : jdpatel22@myseneca.ca <br>
 Course/Section: WEB322/NEE
 
 ## Project URLs
