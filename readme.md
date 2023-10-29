@@ -9,5 +9,5 @@ Student Email : jdpatel22@myseneca.ca <br>
 Course/Section: WEB322/NEE
 
 ## Project URLs
-GitHub Repo   : https://github.com/jpatel98/web322-jdpatel22
+GitHub Repo   : https://github.com/jpatel98/web322-jdpatel22 <br>
 Cyclic URL    : https://<app_name>.cyclic.app/
