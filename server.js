@@ -13,11 +13,19 @@
 const path = require("path");
 const rentalsDb = require("./models/rentals-db");
 const express = require("express");
+require("dotenv").config();
 const bodyParser = require("body-parser");
+const formData = require("form-data");
+const Mailgun = require('mailgun.js');
+const mailgun = new Mailgun(formData);
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+const apiKey = process.env.MAILGUN_API_KEY;
+const domain = process.env.MAILGUN_DOMAIN;
+const mg = mailgun.client({username: 'api', key: process.env.MAILGUN_API_KEY});
 
 // Set EJS as the view engine
 app.set("view engine", "ejs");
@@ -61,6 +69,25 @@ app.post("/signup", (req, res) => {
   // Check if there are any validation errors
   if (validationResult.isValid) {
     console.log("No validation errors. Signing up the user...");
+    // Send an email to the user's email address
+    mg.messages
+      .create(process.env.MAILGUN_DOMAIN, {
+        from: "Glambnb <mailgun@sandbox-123.mailgun.org>",
+        to: email,
+        subject: "Welcome to our website",
+        text: "Thank you for signing up!",
+        html: "<h1>Welcome to our website</h1><p>Thank you for signing up!</p>",
+      })
+      .then(() => {
+        // Redirect the user to a success page
+        res.redirect("/rentals");
+      })
+      .catch((error) => {
+        console.log("Error sending email:", error);
+        // Render the sign-up page again with an error message
+        errors.email = "Error sending email. Please try again later.";
+        res.render("main", { content: "sign-up", formData, errors });
+      });
     // Redirect the user to a success page
     // res.redirect("/success");
   } else {
