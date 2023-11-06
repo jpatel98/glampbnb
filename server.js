@@ -45,19 +45,28 @@ app.get("/rentals", (req, res) => {
 
 // Route handler for the registration page ("/sign-up")
 app.get("/signup", (req, res) => {
-  const formData = {}; 
-  const errors = {}; 
+  const formData = {};
+  const errors = {};
   res.render("main", { content: "sign-up", formData, errors });
 });
 
 app.post("/signup", (req, res) => {
   const { fname, lname, email, password } = req.body;
   // log the form data to the console
-  console.log(req.body);
+  // console.log(req.body);
   const validationResult = validateSignupForm(fname, lname, email, password);
   const errors = validationResult.errors || {};
-  const formData = { fname, lname, email };
-  res.render("main", { content: "sign-up", errors, formData });
+  const formData = { fname, lname, email, password };
+
+  // Check if there are any validation errors
+  if (validationResult.isValid) {
+    console.log("No validation errors. Signing up the user...");
+    // Redirect the user to a success page
+    // res.redirect("/success");
+  } else {
+    // If there are validation errors, render the sign-up page again with the errors
+    res.render("main", { content: "sign-up", formData, errors });
+  }
 });
 
 function validateSignupForm(fname, lname, email, password) {
@@ -89,10 +98,10 @@ function validateSignupForm(fname, lname, email, password) {
   } else {
     // Check if the password meets the complexity requirements
     const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,12}$/;
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
     if (!passwordRegex.test(password)) {
       errors.password =
-        "Password must be between 8 to 12 characters and contain at least one lowercase letter, one uppercase letter, one number, and one symbol";
+        "Password must be between 8 to 20 characters and contain at least one lowercase letter, one uppercase letter, one number, and one symbol";
     }
   }
 
