@@ -10,69 +10,23 @@
  *
  **************************************************************************************/ -->
 
-<script>
-    function displayErrors() {
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const emailErrorElement = document.getElementById('email-error');
-        const passwordErrorElement = document.getElementById('password-error');
-
-        if (emailInput.value.trim() === "") {
-            emailErrorElement.style.display = 'block';
-            emailErrorElement.textContent = 'Email is required';
-        } else if (errors && errors.email) {
-            emailErrorElement.style.display = 'block';
-            emailErrorElement.textContent = errors.email;
-        } else {
-            emailErrorElement.style.display = 'none';
-        }
-
-        if (passwordInput.value.trim() === "") {
-            passwordErrorElement.style.display = 'block';
-            passwordErrorElement.textContent = 'Password is required';
-        } else if (errors && errors.password) {
-            passwordErrorElement.style.display = 'block';
-            passwordErrorElement.textContent = errors.password;
-        } else {
-            passwordErrorElement.style.display = 'none';
-        }
-    }
-  
-    window.onload = function() {
-        const form = document.querySelector('form');
-        form.addEventListener('submit', function(event) {
-            event.preventDefault();
-            displayErrors();
-        });
-    };
-  
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelector('form').addEventListener('submit', function(event) {
-            event.preventDefault();
-        displayErrors();
-        });
-    });
-</script>
-  
-
 <div class="login-container">
   <div class="centered-content">
     <h1>Welcome back</h1>
     <form action="/login" method="POST">
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" />
-            <div id="email-error" class="error-message" style="display: none;">
-              <%= errors && errors.email ? errors.email : '' %>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" />
-            <div id="password-error" class="error-message" style="display: none;">
-              <%= errors && errors.password ? errors.password : '' %>
-            </div>
-          </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" />
+        <div id="email-error" class="error-message" style="display: <%= errors && errors.email ? 'block' : 'none' %>;">
+          <%= errors && errors.email ? errors.email : '' %>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" />
+        <div id="password-error" class="error-message" style="display: <%= errors && errors.password ? 'block' : 'none' %>;">
+          <%= errors && errors.password ? errors.password : '' %>
+        </div>
       </div>
       <div class="centered-button">
         <button type="submit" class="btn">Login</button>
