@@ -11,3 +11,6 @@ Course/Section: WEB322/NEE
 ## Project URLs
 GitHub Repo   : https://github.com/jpatel98/web322-jdpatel22 <br>
 Cyclic URL    : https://jade-sparkling-rhinoceros.cyclic.app
+
+## Note to professor
+Due to [mailgun limitation](https://help.mailgun.com/hc/en-us/articles/217531258-Authorized-Recipients) of sending emails to authorized recipients only, I have added nick.romanidis@senecacollege.ca as one of the recipient. Even after adding authorized recipient, Seneca's email is blocking the mailgun's provided domain for phising.
