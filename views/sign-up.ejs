@@ -9,31 +9,59 @@
  * Course/Section: WEB322 NEE
  *
  **************************************************************************************/ -->
- 
+
 <div class="signup-container">
-    <div class="centered-content">
-        <h1>Signup</h1>
-        <form action="/signup" method="POST">
-            <div class="form-group">
-                <label for="fname">First Name</label>
-                <input type="text" id="fname" name="fname" required>
-            </div>
-            <div class="form-group">
-                <label for="lname">Last Name</label>
-                <input type="text" id="lname" name="lname" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-        </form>
-    </div>
-    <div class="centered-button">
+  <div class="centered-content">
+    <h1>Signup</h1>
+    <form action="/signup" method="POST">
+      <div class="form-group">
+        <label for="fname">First Name</label>
+        <input type="text" id="fname" name="fname" value="<%= formData.fname %>"/>
+        <div
+          id="fname-error"
+          class="error-message"
+          style="display: <%= errors && errors.fname ? 'block' : 'none' %>;"
+        >
+          <%= errors && errors.fname ? errors.fname : '' %>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="lname">Last Name</label>
+        <input type="text" id="lname" name="lname" value="<%= formData.lname %>"/>
+        <div
+          id="lname-error"
+          class="error-message"
+          style="display: <%= errors && errors.lname ? 'block' : 'none' %>;"
+        >
+          <%= errors && errors.lname ? errors.lname : '' %>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="text" id="email" name="email" value="<%= formData.email %>"/>
+        <div
+          id="email-error"
+          class="error-message"
+          style="display: <%= errors && errors.email ? 'block' : 'none' %>;"
+        >
+          <%= errors && errors.email ? errors.email : '' %>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" value="<%= formData.password %>"/>
+        <div
+          id="password-error"
+          class="error-message"
+          style="display: <%= errors && errors.password ? 'block' : 'none' %>;"
+        >
+          <%= errors && errors.password ? errors.password : '' %>
+        </div>
+      </div>
+      <div class="centered-button">
         <button type="submit" class="btn">Sign Up</button>
-    </div>
+      </div>
+    </form>
     <p>Already have an account? <a href="/login">Login here</a></p>
+  </div>
 </div>

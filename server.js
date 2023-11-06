@@ -45,18 +45,73 @@ app.get("/rentals", (req, res) => {
 
 // Route handler for the registration page ("/sign-up")
 app.get("/signup", (req, res) => {
-  res.render("main", { content: "sign-up" });
+  const formData = {}; 
+  const errors = {}; 
+  res.render("main", { content: "sign-up", formData, errors });
 });
 
+app.post("/signup", (req, res) => {
+  const { fname, lname, email, password } = req.body;
+  // log the form data to the console
+  console.log(req.body);
+  const validationResult = validateSignupForm(fname, lname, email, password);
+  const errors = validationResult.errors || {};
+  const formData = { fname, lname, email };
+  res.render("main", { content: "sign-up", errors, formData });
+});
+
+function validateSignupForm(fname, lname, email, password) {
+  const errors = {};
+  // Check if the first name is null or empty
+  if (!fname || fname.trim() === "") {
+    errors.fname = "First name cannot be blank";
+  }
+
+  // Check if the last name is null or empty
+  if (!lname || lname.trim() === "") {
+    errors.lname = "Last name cannot be blank";
+  }
+
+  // Check if the email is null or empty
+  if (!email || email.trim() === "") {
+    errors.email = "Email cannot be blank";
+  } else {
+    // Check if the email is malformed
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      errors.email = "Invalid email address";
+    }
+  }
+
+  // Check if the password is null or empty
+  if (!password || password.trim() === "") {
+    errors.password = "Password cannot be blank";
+  } else {
+    // Check if the password meets the complexity requirements
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,12}$/;
+    if (!passwordRegex.test(password)) {
+      errors.password =
+        "Password must be between 8 to 12 characters and contain at least one lowercase letter, one uppercase letter, one number, and one symbol";
+    }
+  }
+
+  // Return the validation result
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors,
+  };
+}
+
 app.get("/login", (req, res) => {
-    res.render("main", { content: "login", errors: { email: "", password: "" } });
+  res.render("main", { content: "login", errors: { email: "", password: "" } });
 });
 
 app.post("/login", (req, res) => {
-    const { email, password } = req.body;
-    const validationResult = validateLoginForm(email, password);
-    const errors = validationResult.errors || { email: "", password: "" };
-    res.render("main", { content: "login", errors });
+  const { email, password } = req.body;
+  const validationResult = validateLoginForm(email, password);
+  const errors = validationResult.errors || { email: "", password: "" };
+  res.render("main", { content: "login", errors });
 });
 
 function validateLoginForm(email, password) {
