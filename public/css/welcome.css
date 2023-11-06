@@ -1,0 +1,18 @@
+.welcome {
+    padding: 15rem 10rem;
+    color: #335576;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #fefaf5;
+  }
+  
+  .welcome h1 {
+    margin-bottom: 1rem; 
+  }
+  
+  .welcome p {
+    margin-top: 1rem; 
+  }
+  

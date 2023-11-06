@@ -51,6 +51,11 @@ app.get("/rentals", (req, res) => {
   res.render("main", { content: "rentals", allRentals });
 });
 
+// Route handler for welcome page ("/welcome")
+app.get("/welcome", (req, res) => {
+  res.render("main", { content: "welcome" });
+});
+
 // Route handler for the registration page ("/sign-up")
 app.get("/signup", (req, res) => {
   const formData = {};
@@ -68,19 +73,19 @@ app.post("/signup", (req, res) => {
 
   // Check if there are any validation errors
   if (validationResult.isValid) {
-    console.log("No validation errors. Signing up the user...");
+    console.log("No validation errors. Signing up the user and sending email...");
     // Send an email to the user's email address
     mg.messages
       .create(process.env.MAILGUN_DOMAIN, {
         from: "Glambnb <mailgun@sandbox-123.mailgun.org>",
         to: email,
         subject: "Welcome to our website",
-        text: "Thank you for signing up!",
-        html: "<h1>Welcome to our website</h1><p>Thank you for signing up!</p>",
+        text: `Dear ${fname},\n\nWelcome to our website! Thank you for signing up!\n\nBest regards,\nJigar Patel\nGlambnb`,
+        html: `<h1>Dear ${fname},</h1><p>Welcome to our website! Thank you for signing up!</p><p>Best regards,<br>Jigar Patel<br>Glambnb</p>`,
       })
       .then(() => {
         // Redirect the user to a success page
-        res.redirect("/rentals");
+        res.redirect("/welcome");
       })
       .catch((error) => {
         console.log("Error sending email:", error);
@@ -88,8 +93,7 @@ app.post("/signup", (req, res) => {
         errors.email = "Error sending email. Please try again later.";
         res.render("main", { content: "sign-up", formData, errors });
       });
-    // Redirect the user to a success page
-    // res.redirect("/success");
+
   } else {
     // If there are validation errors, render the sign-up page again with the errors
     res.render("main", { content: "sign-up", formData, errors });
@@ -168,6 +172,8 @@ function validateLoginForm(email, password) {
     errors,
   };
 }
+
+
 // *** DO NOT MODIFY THE LINES BELOW ***
 
 // This use() will not allow requests to go beyond it
