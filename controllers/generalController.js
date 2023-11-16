@@ -13,7 +13,19 @@
 const path = require("path");
 const express = require("express");
 const router = express.Router();
+const formData = require("form-data");
+const Mailgun = require("mailgun.js");
+const mailgun = new Mailgun(formData);
+const UserModel = require("../models/userModel");
 const rentalsDb = require("../models/rentals-db");
+
+// Load environment variables
+const apiKey = process.env.MAILGUN_API_KEY;
+const domain = process.env.MAILGUN_DOMAIN;
+const mg = mailgun.client({
+  username: "api",
+  key: process.env.MAILGUN_API_KEY,
+});
 
 // Route handler for the home page ("/")
 router.get("/", (req, res) => {
@@ -36,40 +48,45 @@ router.get("/signup", (req, res) => {
   res.render("main", { content: "sign-up", formData, errors });
 });
 
-router.post("/signup", (req, res) => {
+router.post("/signup", async (req, res) => {
   const { fname, lname, email, password } = req.body;
-  // log the form data to the console
-  // console.log(req.body);
   const validationResult = validateSignupForm(fname, lname, email, password);
   const errors = validationResult.errors || {};
   const formData = { fname, lname, email, password };
 
-  // Check if there are any validation errors
   if (validationResult.isValid) {
-    console.log(
-      "No validation errors. Signing up the user and sending email..."
-    );
-    // Send an email to the user's email address
-    mg.messages
-      .create(process.env.MAILGUN_DOMAIN, {
-        from: "Glambnb <mailgun@sandbox-123.mailgun.org>",
-        to: email,
-        subject: "Welcome to our website",
-        text: `Dear ${fname},\n\nWelcome to our website! Thank you for signing up!\n\nBest regards,\nJigar Patel\nGlambnb`,
-        html: `<h1>Dear ${fname},</h1><p>Welcome to our website! Thank you for signing up!</p><p>Best regards,<br>Jigar Patel<br>Glambnb</p>`,
-      })
-      .then(() => {
-        // Redirect the user to a success page
-        res.redirect("/welcome");
-      })
-      .catch((error) => {
-        console.log("Error sending email:", error);
-        // Render the sign-up page again with an error message
+    try {
+      const existingUser = await UserModel.findOne({ email });
+      if (existingUser) {
+        errors.email = "Email already exists. Please use a different email.";
+        return res.render("main", { content: "sign-up", formData, errors });
+      }
+
+      const newUser = new UserModel({ fname, lname, email, password });
+      await newUser.save();
+
+      try {
+        // Send an email to the user's email address
+        await mg.messages.create(process.env.MAILGUN_DOMAIN, {
+          from: "Glambnb <mailgun@sandbox-123.mailgun.org>",
+          to: email,
+          subject: "Welcome to our website",
+          text: `Dear ${fname},\n\nWelcome to our website! Thank you for signing up!\n\nBest regards,\nJigar Patel\nGlambnb`,
+          html: `<h1>Dear ${fname},</h1><p>Welcome to our website! Thank you for signing up!</p><p>Best regards,<br>Jigar Patel<br>Glambnb</p>`,
+        });
+
+        res.redirect("/welcome"); // Redirect to the welcome page
+      } catch (error) {
+        console.error("Error sending email:", error);
         errors.email = "Error sending email. Please try again later.";
         res.render("main", { content: "sign-up", formData, errors });
-      });
+      }
+    } catch (error) {
+      console.error("Error registering user:", error);
+      errors.email = "Error registering user. Please try again.";
+      res.render("main", { content: "sign-up", formData, errors });
+    }
   } else {
-    // If there are validation errors, render the sign-up page again with the errors
     res.render("main", { content: "sign-up", formData, errors });
   }
 });
