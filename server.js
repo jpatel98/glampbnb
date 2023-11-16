@@ -16,10 +16,12 @@ const express = require("express");
 require("dotenv").config();
 const bodyParser = require("body-parser");
 const formData = require("form-data");
-const Mailgun = require('mailgun.js');
+const Mailgun = require("mailgun.js");
 const mailgun = new Mailgun(formData);
+const mongoose = require("mongoose");
 const generalController = require("./controllers/generalController");
 const rentalController = require("./controllers/rentalsController");
+
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -27,15 +29,18 @@ app.use(bodyParser.json());
 
 const apiKey = process.env.MAILGUN_API_KEY;
 const domain = process.env.MAILGUN_DOMAIN;
-const mg = mailgun.client({username: 'api', key: process.env.MAILGUN_API_KEY});
+const mg = mailgun.client({
+  username: "api",
+  key: process.env.MAILGUN_API_KEY,
+});
 
 // Set EJS as the view engine
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 
 // Define routes using the general and rentals controllers
-app.use('/', generalController);
-app.use('/rentals', rentalController);
+app.use("/", generalController);
+app.use("/rentals", rentalController);
 
 // Define a port to listen to requests on.
 const HTTP_PORT = process.env.PORT || 8080;
@@ -63,6 +68,15 @@ function onHttpStart() {
   console.log("Express http server listening on: " + HTTP_PORT);
 }
 
-// Listen on port 8080. The default port for http is 80, https is 443. We use 8080 here
-// because sometimes port 80 is in use by other applications on the machine
-app.listen(HTTP_PORT, onHttpStart);
+// connect to db using mongoose
+mongoose
+  .connect(process.env.MONGODB_CONNECTION_STRING)
+  .then(() => {
+    console.log("Connected to MongoDB");
+    // Listen on port 8080. The default port for http is 80, https is 443. We use 8080 here
+    // because sometimes port 80 is in use by other applications on the machine
+    app.listen(HTTP_PORT, onHttpStart);
+  })
+  .catch((err) => {
+    console.log("Error connecting to MongoDB", err);
+  });
