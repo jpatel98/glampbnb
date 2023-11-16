@@ -24,4 +24,4 @@ MAILGUN_API_KEY="YOUR_MAILGUN_API_KEY"
 `
 
 ## Note to professor
-Due to [mailgun limitation](https://help.mailgun.com/hc/en-us/articles/217531258-Authorized-Recipients) of sending emails to authorized recipients only, I have added nick.romanidis@senecacollege.ca as one of the recipient. Even after adding authorized recipient, Seneca's email is blocking the mailgun's provided domain for phising.
+Due to [mailgun limitation](https://help.mailgun.com/hc/en-us/articles/217531258-Authorized-Recipients) of sending emails to authorized recipients only, I have added nickroma.seneca@gmail.com as one of the recipient. Even after adding authorized recipient, Seneca's email is blocking the mailgun's provided domain for phising.
