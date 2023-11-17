@@ -28,13 +28,40 @@ const mg = mailgun.client({
   key: process.env.MAILGUN_API_KEY,
 });
 
+// Middleware to check if the user is logged in
+const checkAuthenticated = (req, res, next) => {
+  if (!req.session || !req.session.user) {
+    return res
+      .status(401)
+      .render("main", { content: "404", user: req.session.user || null });
+  }
+  next();
+};
+
+// Middleware to check user roles
+const checkRole = (role) => {
+  return (req, res, next) => {
+    if (req.session.user && req.session.user.role === role) {
+      next();
+    } else {
+      return res
+        .status(401)
+        .render("main", { content: "404", user: req.session.user || null });
+    }
+  };
+};
+
 // Route handler for the home page ("/")
 router.get("/", (req, res) => {
   // Fetch the featured rentals from the rentals-db module
   const featuredRentals = rentalsDb.getFeaturedRentals();
 
   // Render the 'main.ejs' template and pass the featured rentals / features for home page
-  res.render("main", { content: "home", featuredRentals, user: req.session.user });
+  res.render("main", {
+    content: "home",
+    featuredRentals,
+    user: req.session.user || null,
+  });
 });
 
 // Route handler for welcome page ("/welcome")
@@ -43,15 +70,20 @@ router.get("/welcome", (req, res) => {
 });
 
 // Route handler for the cart ("/cart")
-router.get("/cart", (req, res) => {
-    res.render("main", { content: "cart", user: req.session.user });
+router.get("/cart", checkAuthenticated, checkRole("Customer"), (req, res) => {
+  res.render("main", { content: "cart", user: req.session.user || null });
 });
 
 // Route handler for the registration page ("/sign-up")
 router.get("/signup", (req, res) => {
   const formData = {};
   const errors = {};
-  res.render("main", { content: "sign-up", formData, errors, user: req.session.user });
+  res.render("main", {
+    content: "sign-up",
+    formData,
+    errors,
+    user: req.session.user || null,
+  });
 });
 
 router.post("/signup", async (req, res) => {
@@ -65,11 +97,24 @@ router.post("/signup", async (req, res) => {
       const existingUser = await UserModel.findOne({ email });
       if (existingUser) {
         errors.email = "Email already exists. Please use a different email.";
-        return res.render("main", { content: "sign-up", formData, errors, user: req.session.user });
+        return res.render("main", {
+          content: "sign-up",
+          formData,
+          errors,
+          user: req.session.user || null,
+        });
       }
 
       const newUser = new UserModel({ fname, lname, email, password });
       await newUser.save();
+
+      // Create a session for the new user after successful signup
+      req.session.user = {
+        id: newUser._id,
+        email: newUser.email,
+        role: newUser.role, // Add any other relevant user information
+        fname: newUser.fname,
+      };
 
       try {
         // Send an email to the user's email address
@@ -85,15 +130,30 @@ router.post("/signup", async (req, res) => {
       } catch (error) {
         console.error("Error sending email:", error);
         errors.email = "Error sending email. Please try again later.";
-        res.render("main", { content: "sign-up", formData, errors, user: req.session.user });
+        res.render("main", {
+          content: "sign-up",
+          formData,
+          errors,
+          user: req.session.user || null,
+        });
       }
     } catch (error) {
       console.error("Error registering user:", error);
       errors.email = "Error registering user. Please try again.";
-      res.render("main", { content: "sign-up", formData, errors, user: req.session.user });
+      res.render("main", {
+        content: "sign-up",
+        formData,
+        errors,
+        user: req.session.user || null,
+      });
     }
   } else {
-    res.render("main", { content: "sign-up", formData, errors, user: req.session.user });
+    res.render("main", {
+      content: "sign-up",
+      formData,
+      errors,
+      user: req.session.user || null,
+    });
   }
 });
 
@@ -141,7 +201,11 @@ function validateSignupForm(fname, lname, email, password) {
 }
 
 router.get("/login", (req, res) => {
-  res.render("main", { content: "login", errors: { email: "", password: "" }, user: req.session.user });
+  res.render("main", {
+    content: "login",
+    errors: { email: "", password: "" },
+    user: req.session.user || null,
+  });
 });
 
 router.post("/login", async (req, res) => {
@@ -158,7 +222,7 @@ router.post("/login", async (req, res) => {
           content: "login",
           errors,
           formData: { email, role },
-          user: req.session.user,
+          user: req.session.user || null,
         });
       }
 
@@ -169,7 +233,7 @@ router.post("/login", async (req, res) => {
           content: "login",
           errors,
           formData: { email, role },
-          user: req.session.user,
+          user: req.session.user || null,
         });
       }
 
@@ -180,7 +244,7 @@ router.post("/login", async (req, res) => {
         role,
         fname: user.fname,
       };
-    //   console.log("User logged in:", req.session.user);
+      //   console.log("User logged in:", req.session.user);
       if (role === "Data Entry Clerk") {
         return res.redirect("/rentals/list");
       } else if (role === "Customer") {
@@ -192,16 +256,29 @@ router.post("/login", async (req, res) => {
       return res.render("main", {
         content: "login",
         errors,
-        user: req.session.user,
+        user: req.session.user || null,
       });
     }
   } else {
     return res.render("main", {
       content: "login",
       errors,
-      user: req.session.user,
+      user: req.session.user || null,
     });
   }
+});
+
+// Logout route
+router.get("/logout", (req, res) => {
+  // Clear the user session
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error destroying session:", err);
+      return res.redirect("/");
+    }
+    // Redirect to the home page after successfully logging out
+    res.redirect("/login");
+  });
 });
 
 function validateLoginForm(email, password) {

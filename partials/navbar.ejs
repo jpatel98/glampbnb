@@ -9,7 +9,6 @@
  * Course/Section: WEB322 NEE
  *
  **************************************************************************************/ -->
- 
 <!-- Navigation Bar -->
 <nav class="navbar">
   <div class="navbar__container">
@@ -27,14 +26,30 @@
         <li class="navbar__list">
           <a href="/rentals" class="<%= content === 'rentals' ? 'active-page' : '' %>">Rentals</a>
         </li>
-        <li class="navbar__list">
-          <a href="/signup" class="<%= content === 'sign-up' ? 'active-page' : '' %>">Signup</a>
-        </li>
-        <li class="navbar__list">
-          <a href="/login" class="<%= content === 'login' ? 'active-page' : '' %>">Login</a>
-        </li>
+        <% if (user) { %>
+          <li class="navbar__list">
+            <a href="/logout">Logout</a>
+          </li>
+          <% if (user.role === 'Customer') { %>
+            <li class="navbar__list">
+              <a href="/cart" class="<%= content === 'cart' ? 'active-page' : '' %>">Welcome, <%= user.fname %></a>
+            </li>
+          <% } else if (user.role === 'Data Entry Clerk') { %>
+            <li class="navbar__list">
+              <a href="/rentals/list" class="<%= content === 'rentals-list' ? 'active-page' : '' %>">Welcome, <%= user.fname %></a>
+            </li>
+          <% } %>
+        <% } else { %>
+          <li class="navbar__list">
+            <a href="/signup" class="<%= content === 'sign-up' ? 'active-page' : '' %>">Signup</a>
+          </li>
+          <li class="navbar__list">
+            <a href="/login" class="<%= content === 'login' ? 'active-page' : '' %>">Login</a>
+          </li>
+        <% } %>
       </ul>
     </div>
   </div>
 </nav>
 <!-- End of Navigation Bar -->
+
