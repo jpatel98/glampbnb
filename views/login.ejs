@@ -10,7 +10,7 @@
  *
  **************************************************************************************/ -->
 
-<div class="login-container">
+ <div class="login-container">
   <div class="centered-content">
     <h1>Welcome back</h1>
     <form action="/login" method="POST">
@@ -28,6 +28,19 @@
           <%= errors && errors.password ? errors.password : '' %>
         </div>
       </div>
+      <div class="form-group">
+        <label>Role:</label>
+        <div class="role-options">
+          <div class="role-option">
+            <input type="radio" id="data-entry" name="role" value="Data Entry Clerk" checked>
+            <label for="data-entry">Data Entry Clerk</label>
+          </div>
+          <div class="role-option">
+            <input type="radio" id="customer" name="role" value="Customer">
+            <label for="customer">Customer</label>
+          </div>
+        </div>
+      </div>
       <div class="centered-button">
         <button type="submit" class="btn">Login</button>
       </div>
@@ -35,3 +48,4 @@
     <p>Don't have an account? <a href="/signup">Sign up here</a></p>
   </div>
 </div>
+

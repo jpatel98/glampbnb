@@ -6,10 +6,6 @@
   background-color: #f4f4f4;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Style for the centered content (h1 and form elements) */
-.centered-content {
   text-align: center;
 }
 
@@ -20,7 +16,7 @@
 /* Style for form elements */
 .form-group {
   margin-bottom: 15px;
-  text-align: left; /* Align form elements to the left */
+  text-align: left;
 }
 
 .form-group label {
@@ -29,17 +25,24 @@
   color: #555;
 }
 
-.form-group input {
-  width: 100%;
+.form-group input[type="text"],
+.form-group input[type="password"] {
+  width: calc(100% - 22px);
   padding: 10px;
+  margin-bottom: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 16px;
 }
 
+.form-group label input[type="radio"] {
+  margin-right: 5px;
+}
+
 /* Style for the centered button */
 .centered-button {
-  text-align: center; /* Center the button horizontally */
+  text-align: center;
+  margin-top: 10px;
 }
 
 .btn {
@@ -70,7 +73,26 @@ a {
 
 /* Login error */
 .error-message {
-    padding: 1px 1px;
-    color: red;
-    font-size: 12px;
-  }
+  padding: 1px 1px;
+  color: red;
+  font-size: 12px;
+}
+
+.role-options {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+ }
+ 
+ .role-option {
+  display: flex;
+  align-items: space-evenly;
+  justify-content: flex-start;
+  flex-direction: row;
+ }
+
+ input[type="radio"] {
+  width: fit-content;
+  margin-right: 15px;
+  margin-bottom: 5px;
+ }
