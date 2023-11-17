@@ -13,6 +13,7 @@
 const path = require("path");
 const rentalsDb = require("./models/rentals-db");
 const express = require("express");
+const session = require("express-session");
 require("dotenv").config();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -20,6 +21,13 @@ const generalController = require("./controllers/generalController");
 const rentalController = require("./controllers/rentalsController");
 
 const app = express();
+app.use(
+  session({
+    secret: process.env.EXPRESS_SESSION_SECRET_KEY,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 

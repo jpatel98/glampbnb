@@ -82,17 +82,17 @@ a {
   display: flex;
   justify-content: space-between;
   flex-direction: column;
- }
- 
- .role-option {
+}
+
+.role-option {
   display: flex;
   align-items: space-evenly;
   justify-content: flex-start;
   flex-direction: row;
- }
+}
 
- input[type="radio"] {
+input[type="radio"] {
   width: fit-content;
   margin-right: 15px;
   margin-bottom: 5px;
- }
+}

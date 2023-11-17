@@ -23,4 +23,9 @@ router.get("/", (req, res) => {
   res.render("main", { content: "rentals", allRentals });
 });
 
+// Route handler for the rentals page ("/rentals/list")
+router.get("/list", (req, res) => {
+  res.render("main", { content: "rentals-list" });
+});
+
 module.exports = router;

@@ -16,6 +16,7 @@ const router = express.Router();
 const formData = require("form-data");
 const Mailgun = require("mailgun.js");
 const mailgun = new Mailgun(formData);
+const bcrypt = require("bcrypt");
 const UserModel = require("../models/userModel");
 const rentalsDb = require("../models/rentals-db");
 
@@ -33,7 +34,7 @@ router.get("/", (req, res) => {
   const featuredRentals = rentalsDb.getFeaturedRentals();
 
   // Render the 'main.ejs' template and pass the featured rentals / features for home page
-  res.render("main", { content: "home", featuredRentals });
+  res.render("main", { content: "home", featuredRentals, user: req.session.user });
 });
 
 // Route handler for welcome page ("/welcome")
@@ -41,11 +42,16 @@ router.get("/welcome", (req, res) => {
   res.render("main", { content: "welcome" });
 });
 
+// Route handler for the cart ("/cart")
+router.get("/cart", (req, res) => {
+    res.render("main", { content: "cart", user: req.session.user });
+});
+
 // Route handler for the registration page ("/sign-up")
 router.get("/signup", (req, res) => {
   const formData = {};
   const errors = {};
-  res.render("main", { content: "sign-up", formData, errors });
+  res.render("main", { content: "sign-up", formData, errors, user: req.session.user });
 });
 
 router.post("/signup", async (req, res) => {
@@ -59,7 +65,7 @@ router.post("/signup", async (req, res) => {
       const existingUser = await UserModel.findOne({ email });
       if (existingUser) {
         errors.email = "Email already exists. Please use a different email.";
-        return res.render("main", { content: "sign-up", formData, errors });
+        return res.render("main", { content: "sign-up", formData, errors, user: req.session.user });
       }
 
       const newUser = new UserModel({ fname, lname, email, password });
@@ -79,15 +85,15 @@ router.post("/signup", async (req, res) => {
       } catch (error) {
         console.error("Error sending email:", error);
         errors.email = "Error sending email. Please try again later.";
-        res.render("main", { content: "sign-up", formData, errors });
+        res.render("main", { content: "sign-up", formData, errors, user: req.session.user });
       }
     } catch (error) {
       console.error("Error registering user:", error);
       errors.email = "Error registering user. Please try again.";
-      res.render("main", { content: "sign-up", formData, errors });
+      res.render("main", { content: "sign-up", formData, errors, user: req.session.user });
     }
   } else {
-    res.render("main", { content: "sign-up", formData, errors });
+    res.render("main", { content: "sign-up", formData, errors, user: req.session.user });
   }
 });
 
@@ -135,14 +141,67 @@ function validateSignupForm(fname, lname, email, password) {
 }
 
 router.get("/login", (req, res) => {
-  res.render("main", { content: "login", errors: { email: "", password: "" } });
+  res.render("main", { content: "login", errors: { email: "", password: "" }, user: req.session.user });
 });
 
-router.post("/login", (req, res) => {
-  const { email, password } = req.body;
+router.post("/login", async (req, res) => {
+  const { email, password, role } = req.body;
   const validationResult = validateLoginForm(email, password);
   const errors = validationResult.errors || { email: "", password: "" };
-  res.render("main", { content: "login", errors });
+
+  if (validationResult.isValid) {
+    try {
+      const user = await UserModel.findOne({ email });
+      if (!user) {
+        errors.email = "Invalid email and/or password";
+        return res.render("main", {
+          content: "login",
+          errors,
+          formData: { email, role },
+          user: req.session.user,
+        });
+      }
+
+      const passwordMatch = await bcrypt.compare(password, user.password);
+      if (!passwordMatch) {
+        errors.email = "Invalid email and/or password";
+        return res.render("main", {
+          content: "login",
+          errors,
+          formData: { email, role },
+          user: req.session.user,
+        });
+      }
+
+      // Initialize the session object
+      req.session.user = {
+        id: user._id,
+        email: user.email,
+        role,
+        fname: user.fname,
+      };
+    //   console.log("User logged in:", req.session.user);
+      if (role === "Data Entry Clerk") {
+        return res.redirect("/rentals/list");
+      } else if (role === "Customer") {
+        return res.redirect("/cart");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      errors.email = "Error during login. Please try again.";
+      return res.render("main", {
+        content: "login",
+        errors,
+        user: req.session.user,
+      });
+    }
+  } else {
+    return res.render("main", {
+      content: "login",
+      errors,
+      user: req.session.user,
+    });
+  }
 });
 
 function validateLoginForm(email, password) {

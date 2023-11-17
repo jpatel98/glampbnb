@@ -10,21 +10,29 @@
  *
  **************************************************************************************/ -->
 
- <div class="login-container">
+<div class="login-container">
   <div class="centered-content">
     <h1>Welcome back</h1>
     <form action="/login" method="POST">
       <div class="form-group">
         <label for="email">Email</label>
         <input type="text" id="email" name="email" />
-        <div id="email-error" class="error-message" style="display: <%= errors && errors.email ? 'block' : 'none' %>;">
+        <div
+          id="email-error"
+          class="error-message"
+          style="display: <%= errors && errors.email ? 'block' : 'none' %>;"
+        >
           <%= errors && errors.email ? errors.email : '' %>
         </div>
       </div>
       <div class="form-group">
         <label for="password">Password</label>
         <input type="password" id="password" name="password" />
-        <div id="password-error" class="error-message" style="display: <%= errors && errors.password ? 'block' : 'none' %>;">
+        <div
+          id="password-error"
+          class="error-message"
+          style="display: <%= errors && errors.password ? 'block' : 'none' %>;"
+        >
           <%= errors && errors.password ? errors.password : '' %>
         </div>
       </div>
@@ -32,11 +40,17 @@
         <label>Role:</label>
         <div class="role-options">
           <div class="role-option">
-            <input type="radio" id="data-entry" name="role" value="Data Entry Clerk" checked>
+            <input
+              type="radio"
+              id="data-entry"
+              name="role"
+              value="Data Entry Clerk"
+              checked
+            />
             <label for="data-entry">Data Entry Clerk</label>
           </div>
           <div class="role-option">
-            <input type="radio" id="customer" name="role" value="Customer">
+            <input type="radio" id="customer" name="role" value="Customer" />
             <label for="customer">Customer</label>
           </div>
         </div>
@@ -48,4 +62,3 @@
     <p>Don't have an account? <a href="/signup">Sign up here</a></p>
   </div>
 </div>
-
