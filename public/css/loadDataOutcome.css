@@ -1,0 +1,15 @@
+.load-data-outcome {
+  
+  color: #335576;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #fefaf5;
+  height: 67vh;
+}
+
+.load-data-outcome-h1 {
+  margin-bottom: 1rem;
+}
+

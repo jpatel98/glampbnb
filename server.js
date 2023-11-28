@@ -19,6 +19,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const generalController = require("./controllers/generalController");
 const rentalController = require("./controllers/rentalsController");
+const loadDataController = require("./controllers/loadDataController");
 
 const app = express();
 app.use(
@@ -35,9 +36,10 @@ app.use(bodyParser.json());
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 
-// Define routes using the general and rentals controllers
+// Define routes using the controllers
 app.use("/", generalController);
 app.use("/rentals", rentalController);
+app.use('/load-data/rentals', loadDataController);
 
 // Define a port to listen to requests on.
 const HTTP_PORT = process.env.PORT || 8080;
