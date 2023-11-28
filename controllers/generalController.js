@@ -66,7 +66,7 @@ router.get("/", (req, res) => {
 
 // Route handler for welcome page ("/welcome")
 router.get("/welcome", (req, res) => {
-  res.render("main", { content: "welcome" });
+  res.render("main", { content: "welcome", user: req.session.user || null });
 });
 
 // Route handler for the cart ("/cart")
