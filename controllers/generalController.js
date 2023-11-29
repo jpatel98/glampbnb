@@ -17,7 +17,9 @@ const Mailgun = require("mailgun.js");
 const mailgun = new Mailgun(formData);
 const bcrypt = require("bcrypt");
 const UserModel = require("../models/userModel");
-const rentalsDb = require("../models/rentals-db");
+// const rentalsDb = require("../models/rentals-db");
+const Rental = require('../models/rentalModel');
+
 
 // Load environment variables
 const apiKey = process.env.MAILGUN_API_KEY;
@@ -51,16 +53,23 @@ const checkRole = (role) => {
 };
 
 // Route handler for the home page ("/")
-router.get("/", (req, res) => {
-  // Fetch the featured rentals from the rentals-db module
-  const featuredRentals = rentalsDb.getFeaturedRentals();
+// Route handler for the home page ("/")
+router.get("/", async (req, res) => {
+  try {
+    const featuredRentals = await Rental.find({ featuredRental: true });
 
-  // Render the 'main.ejs' template and pass the featured rentals / features for home page
-  res.render("main", {
-    content: "home",
-    featuredRentals,
-    user: req.session.user || null,
-  });
+    // Render the 'main.ejs' template and pass the featured rentals for the home page
+    res.render("main", {
+      content: "home",
+      featuredRentals,
+      user: req.session.user || null,
+    });
+  } catch (error) {
+    console.error("Error fetching featured rentals:", error);
+    res
+      .status(500)
+      .render("main", { content: "error", user: req.session.user || null });
+  }
 });
 
 // Route handler for welcome page ("/welcome")

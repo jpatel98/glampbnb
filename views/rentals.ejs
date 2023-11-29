@@ -16,8 +16,8 @@
   <% allRentals.forEach((rentalGroup) => { %>
   <h2><%= rentalGroup.cityProvince %></h2>
   <div class="rental-grid">
-    <% rentalGroup.rentals.forEach((rental) => { %> <%-
-    include('../partials/rental', { rental: rental }) %> <% }) %>
+    <% rentalGroup.rentals.forEach((rental) => { %> 
+    <%- include('../partials/rental', { rental: rental }) %> <% }) %>
   </div>
   <% }) %>
 </div>

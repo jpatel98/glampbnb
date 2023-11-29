@@ -12,12 +12,15 @@
 
 const express = require("express");
 const router = express.Router();
-const rentalsDb = require("../models/rentals-db");
+// const rentalsDb = require("../models/rentals-db");
+const Rental = require("../models/rentalModel");
 
 // Middleware to check if the user is logged in
 const checkAuthenticated = (req, res, next) => {
   if (!req.session || !req.session.user) {
-    return res.status(401).render("main", {content: "404", user: req.session.user || null});
+    return res
+      .status(401)
+      .render("main", { content: "404", user: req.session.user || null });
   }
   next();
 };
@@ -28,22 +31,32 @@ const checkRole = (role) => {
     if (req.session.user && req.session.user.role === role) {
       next();
     } else {
-      return res.status(401).render("main", {content: "404", user: req.session.user || null});
+      return res
+        .status(401)
+        .render("main", { content: "404", user: req.session.user || null });
     }
   };
 };
 
 // Route handler for the rentals page ("/rentals")
-router.get("/", (req, res) => {
-  const allRentals = rentalsDb.getRentalsByCityAndProvince();
+router.get("/", async (req, res) => {
+  try {
+    const allRentals = await Rental.find({}).lean(); //.lean(), tells Mongoose to give the plain JS object.
+    const groupedRentals = groupRentalsByCityAndProvince(allRentals);
 
-  // Render the 'main.ejs' template and pass rental data for the rentals page
-  res.render("main", {
-    content: "rentals",
-    allRentals,
-    user: req.session.user || null,
-  });
+    console.log(groupedRentals);
+    // Render the 'main.ejs' template and pass rental data for the rentals page
+    res.render("main", {
+      content: "rentals",
+      allRentals: groupedRentals,
+      user: req.session.user || null,
+    });
+  } catch (error) {
+    console.error("Error fetching rentals:", error);
+    res.status(500).render("main", { content: "error", user: req.session.user || null });
+  }
 });
+
 
 // Route handler for the rentals list page ("/rentals/list")
 router.get(
@@ -57,5 +70,31 @@ router.get(
     });
   }
 );
+
+function groupRentalsByCityAndProvince(rentals) {
+  const groupedRentals = {};
+
+  rentals.forEach((rental) => {
+    const cityProvince = `${rental.city}, ${rental.province}`;
+
+    if (!groupedRentals[cityProvince]) {
+      groupedRentals[cityProvince] = {
+        cityProvince,
+        rentals: [],
+      };
+    }
+
+    // Include the city and province within each rental
+    const rentalWithLocation = {
+      ...rental,
+      city: rental.city,
+      province: rental.province,
+    };
+
+    groupedRentals[cityProvince].rentals.push(rentalWithLocation);
+  });
+
+  return Object.values(groupedRentals);
+}
 
 module.exports = router;
