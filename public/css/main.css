@@ -43,7 +43,7 @@
 /* Media query for smaller screens */
 @media (max-width: 768px) {
   .hero__container {
-    flex-direction: column; /* Stack content in the hero section for smaller screens */
+    flex-direction: column; 
     text-align: center;
   }
 
@@ -53,17 +53,17 @@
   }
 
   .hero__title > h1 {
-    font-size: 2rem; /* Adjust font size for smaller screens */
+    font-size: 2rem;
     margin-top: 10rem;
   }
 
   .hero__img > img {
-    height: auto; /* Let the image adjust its height for smaller screens */
+    height: auto;
     margin: 0;
   }
 
   .hero__button {
-    width: 8rem; /* Adjust button width for smaller screens */
+    width: 8rem; 
     position: relative;
     margin: 2rem auto;
   }
@@ -91,7 +91,7 @@
 }
 
 .recommended__item {
-  width: calc(33.33% - 20px); /* Three items in a row with spacing */
+  width: calc(33.33% - 20px);
   background-color: #f2f2f2;
   border-radius: 5px;
   padding: 20px;
@@ -123,12 +123,12 @@
 /* Media query for smaller screens */
 @media (max-width: 768px) {
   .recommended__container {
-    flex-direction: column; /* Stack items in a single column for smaller screens */
+    flex-direction: column;
     align-items: center;
   }
 
   .recommended__item {
-    width: 100%; /* Full width for recommended items on smaller screens */
+    width: 100%; 
   }
 }
 
@@ -180,7 +180,7 @@
 /* Media query for smaller screens */
 @media (max-width: 768px) {
   .features__container {
-    grid-template-columns: 1fr; /* Stack features in a single column for smaller screens */
+    grid-template-columns: 1fr;
     gap: 1rem;
   }
 }

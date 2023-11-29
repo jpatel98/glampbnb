@@ -20,7 +20,7 @@
 /* Style for form elements */
 .form-group {
     margin-bottom: 15px;
-    text-align: left; /* Align form elements to the left */
+    text-align: left; 
 }
 
 .form-group label {
@@ -39,7 +39,7 @@
 
 /* Style for the centered button */
 .centered-button {
-    text-align: center; /* Center the button horizontally */
+    text-align: center; 
 }
 
 .btn {
@@ -63,9 +63,7 @@ a {
     color: #007BFF;
 }
 
-
-
 .form-group-checkbox {
     margin-bottom: 15px;
-    text-align: left; /* Align form elements to the left */
+    text-align: left;
 }

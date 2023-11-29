@@ -71,7 +71,7 @@ body {
   }
 
   .navbar__logo > a > img {
-    height: 3rem; /* Adjust height for smaller screens */
+    height: 3rem; 
   }
 
   .navbar__list {
@@ -154,11 +154,11 @@ body {
   }
 
   .footer__title {
-    font-size: 1rem; /* Adjust title font size for smaller screens */
+    font-size: 1rem; 
   }
 
   .footer__info {
-    font-size: 0.9rem; /* Adjust info font size for smaller screens */
+    font-size: 0.9rem; 
   }
 
   .footer__social {
@@ -166,13 +166,26 @@ body {
   }
 
   .footer__social__logo {
-    height: 1.5rem; /* Adjust social logo height for smaller screens */
-    margin-right: 0.5rem; /* Adjust margin between social logos */
+    height: 1.5rem; 
+    margin-right: 0.5rem; 
   }
 
   .footer__copyright {
-    font-size: 0.7rem; /* Adjust copyright font size for smaller screens */
+    font-size: 0.7rem; 
     margin-top: 1rem;
     color: black;
   }
+}
+
+.delete-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 7rem;
+  color: #335576;
+}
+
+.delete-form{
+  padding-bottom: 2rem;
 }

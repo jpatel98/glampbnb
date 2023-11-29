@@ -120,7 +120,7 @@ router.post("/signup", async (req, res) => {
       req.session.user = {
         id: newUser._id,
         email: newUser.email,
-        role: newUser.role, // Add any other relevant user information
+        role: newUser.role,
         fname: newUser.fname,
       };
 

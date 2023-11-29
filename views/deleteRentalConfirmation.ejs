@@ -1,0 +1,21 @@
+<div class="delete-container">
+    <h1>Remove Rental</h1>
+    <p>Are you sure you want to remove the following rental?</p>
+    <div class="recommended__item">
+        <!-- Display rental information dynamically from the passed 'rental' object -->
+        <img src="<%= rental.imageUrl %>" alt="<%= rental.headline %>" />
+        <!-- logging the url to see if it works -->
+        <!-- <p><%= rental.imageUrl %></p> -->
+        <h3><%= rental.headline %></h3>
+        <p>Sleeps: <%= rental.numSleeps %></p>
+        <p>Bedrooms: <%= rental.numBedrooms %></p>
+        <p>Bathrooms: <%= rental.numBathrooms %></p>
+        <p>Price per night: $<%= rental.pricePerNight %></p>
+    </div>
+    <form action="/rentals/remove/<%= rental._id %>" method="POST" class="delete-form">
+        <div class="centered-button">
+          <button type="submit" class="btn">Confirm Removal</button>
+          <button type="button" class="btn" onclick="location.href='/rentals/list'">Cancel</button>
+        </div>
+      </form>
+</div>

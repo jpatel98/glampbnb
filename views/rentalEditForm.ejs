@@ -1,7 +1,7 @@
 <div class="signup-container">
     <div class="centered-content">
       <h1>Edit Rental</h1>
-      <form action="/rentals/edit/<%= rental._id %>" method="POST">
+      <form action="/rentals/edit/<%= rental._id %>" method="POST" enctype="multipart/form-data">
         <div class="form-group">
           <label for="headline">Headline</label>
           <input type="text" id="headline" name="headline" value="<%= rental.headline %>" required>
@@ -31,8 +31,8 @@
           <input type="text" id="province" name="province" value="<%= rental.province %>" required>
         </div>
         <div class="form-group">
-          <label for="imageUrl">Image URL</label>
-          <input type="text" id="imageUrl" name="imageUrl" value="<%= rental.imageUrl %>" required>
+          <label for="imageUrl">Image File</label>
+          <input type="file" id="imageUrl" name="imageUrl" accept=".jpg, .jpeg, .png, .gif">
         </div>
         <div class="form-group">
           <label for="featuredRental">Featured Rental</label>

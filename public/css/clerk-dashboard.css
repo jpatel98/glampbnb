@@ -66,7 +66,7 @@ button:hover {
   background-color: #db7a4e;
 }
 
-/* Apply a media query for smaller screens */
+/* For smaller screens */
 @media (max-width: 768px) {
   .properties-container {
     grid-template-columns: 1fr; 
