@@ -53,27 +53,124 @@ router.get("/", async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching rentals:", error);
-    res.status(500).render("main", { content: "error", user: req.session.user || null });
+    res
+      .status(500)
+      .render("main", { content: "error", user: req.session.user || null });
   }
 });
 
-
 // Route handler for the rentals list page ("/rentals/list")
-router.get("/list", checkAuthenticated, checkRole("Data Entry Clerk"), async (req, res) => {
-  try {
-    const rentals = await Rental.find({}).sort({ headline: 1 }).lean();
+router.get(
+  "/list",
+  checkAuthenticated,
+  checkRole("Data Entry Clerk"),
+  async (req, res) => {
+    try {
+      const rentals = await Rental.find({}).sort({ headline: 1 }).lean();
+      res.render("main", {
+        content: "clerkDashboard",
+        rentals,
+        user: req.session.user || null,
+      });
+    } catch (error) {
+      console.error("Error fetching rentals:", error);
+      res
+        .status(500)
+        .render("main", { content: "error", user: req.session.user || null });
+    }
+  }
+);
+
+// GET Route for Add Rental Form
+router.get(
+  "/add",
+  checkAuthenticated,
+  checkRole("Data Entry Clerk"),
+  (req, res) => {
+    // Render a form for adding new rental properties
     res.render("main", {
-      content: "clerkDashboard",
-      rentals,
+      content: "rentalAddForm",
+      user: req.session.user || null,
+    });
+  }
+);
+
+// POST Route for processing rental form submission
+router.post("/add", checkAuthenticated, checkRole("Data Entry Clerk"), async (req, res) => {
+  // Construct a new Rental object using form data
+  const newRental = new Rental({
+    headline: req.body.headline,
+    numSleeps: req.body.numSleeps,
+    numBedrooms: req.body.numBedrooms,
+    numBathrooms: req.body.numBathrooms,
+    pricePerNight: req.body.pricePerNight,
+    city: req.body.city,
+    province: req.body.province,
+    imageUrl: req.body.imageUrl,
+    featuredRental: req.body.featuredRental === 'on', // Checkbox returns 'on' if checked
+  });
+
+  try {
+    // Save the new rental to the database
+    await newRental.save();
+    // Redirect to the rentals list page or show a success message
+    res.redirect("/rentals/list");
+  } catch (error) {
+    // Handle errors and render the form again with error messages
+    console.error("Error adding new rental:", error);
+    res.status(500).render("main", {
+      content: "rental-add-form",
+      user: req.session.user || null,
+      errors: { message: "Failed to add rental. Please try again." },
+      formData: req.body, // Send back the form data for user convenience
+    });
+  }
+});
+
+// GET Route for Edit Rental Form
+router.get("/edit/:id", checkAuthenticated, checkRole("Data Entry Clerk"), async (req, res) => {
+  try {
+    // Find the rental by ID
+    const rental = await Rental.findById(req.params.id).lean();
+    if (!rental) {
+      return res.status(404).render("main", { content: "error", user: req.session.user || null });
+    }
+    
+    // Render a form pre-filled with rental data
+    res.render("main", {
+      content: "rentalEditForm",
+      rental: rental,
       user: req.session.user || null,
     });
   } catch (error) {
-    console.error("Error fetching rentals:", error);
+    console.error("Error fetching rental:", error);
     res.status(500).render("main", { content: "error", user: req.session.user || null });
   }
 });
 
+// POST Route for processing rental form submission
+router.post("/edit/:id", checkAuthenticated, checkRole("Data Entry Clerk"), async (req, res) => {
+  try {
+    // Find the rental by ID and update it
+    const updatedRental = await Rental.findByIdAndUpdate(req.params.id, {
+      ...req.body,
+      featuredRental: !!req.body.featuredRental,
+    }, { new: true, runValidators: true });
 
+    // Redirect to the rentals list page or show a success message
+    res.redirect("/rentals/list");
+  } catch (error) {
+    // Handle validation errors or display error messages
+    res.status(400).render("main", {
+      content: "rentalEditForm",
+      errors: error.message,
+      rental: req.body,
+      user: req.session.user || null,
+    });
+  }
+});
+
+// Utility functions
 function groupRentalsByCityAndProvince(rentals) {
   const groupedRentals = {};
 

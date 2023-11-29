@@ -1,0 +1,48 @@
+<div class="signup-container">
+    <div class="centered-content">
+      <h1>Add New Rental</h1>
+      <form action="/rentals/add" method="POST">
+        <div class="form-group">
+          <label for="headline">Headline</label>
+          <input type="text" id="headline" name="headline" required>
+        </div>
+        <div class="form-group">
+          <label for="numSleeps">Number of People Accomodated</label>
+          <input type="number" id="numSleeps" name="numSleeps" min="0" max="100" required>
+        </div>
+        <div class="form-group">
+          <label for="numBedrooms">Number of Bedrooms</label>
+          <input type="number" id="numBedrooms" name="numBedrooms" min="0" max="100" required>
+        </div>
+        <div class="form-group">
+          <label for="numBathrooms">Number of Bathrooms</label>
+          <input type="number" id="numBathrooms" name="numBathrooms" min="0" max="100" required>
+        </div>
+        <div class="form-group">
+          <label for="pricePerNight">Price Per Night</label>
+          <input type="number" id="pricePerNight" name="pricePerNight" min="0.00" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="city">City</label>
+          <input type="text" id="city" name="city" required>
+        </div>
+        <div class="form-group">
+          <label for="province">Province</label>
+          <input type="text" id="province" name="province" required>
+        </div>
+        <div class="form-group">
+          <label for="imageUrl">Image URL (ends with jpg or png)</label>
+          <input type="text" id="imageUrl" name="imageUrl" required>
+        </div>
+        <div class="form-group-checkbox">
+          <label for="featuredRental">Featured Rental</label>
+          <input type="checkbox" id="featuredRental" name="featuredRental">
+        </div>
+        <div class="centered-button">
+          <button class="btn" type="submit" >Add</button>
+          <button class="btn" onclick="location.href='/rentals/list/'">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  

@@ -63,7 +63,9 @@ a {
     color: #007BFF;
 }
 
-/* Hover effect for the "Sign Up" button */
-.btn:hover {
-    background-color: #0056b3;
+
+
+.form-group-checkbox {
+    margin-bottom: 15px;
+    text-align: left; /* Align form elements to the left */
 }

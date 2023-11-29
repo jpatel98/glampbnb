@@ -45,14 +45,17 @@
   margin-top: 10px;
 }
 
-.btn {
-  background-color: #007bff;
-  color: white;
-  padding: 10px 20px;
+button {
+  padding: 5px 10px;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 16px;
+  background-color: #335576;
+  color: white;
+}
+
+button:hover {
+  background-color: #db7a4e;
 }
 
 /* Style for the signup link */
@@ -64,11 +67,6 @@ p {
 a {
   text-decoration: none;
   color: #007bff;
-}
-
-/* Hover effect for the "Login" button */
-.btn:hover {
-  background-color: #0056b3;
 }
 
 /* Login error */
