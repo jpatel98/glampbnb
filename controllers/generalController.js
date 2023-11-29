@@ -87,7 +87,7 @@ router.get("/signup", (req, res) => {
   const formData = {};
   const errors = {};
   res.render("main", {
-    content: "sign-up",
+    content: "signUp",
     formData,
     errors,
     user: req.session.user || null,
@@ -106,7 +106,7 @@ router.post("/signup", async (req, res) => {
       if (existingUser) {
         errors.email = "Email already exists. Please use a different email.";
         return res.render("main", {
-          content: "sign-up",
+          content: "signUp",
           formData,
           errors,
           user: req.session.user || null,
@@ -139,7 +139,7 @@ router.post("/signup", async (req, res) => {
         console.error("Error sending email:", error);
         errors.email = "Error sending email. Please try again later.";
         res.render("main", {
-          content: "sign-up",
+          content: "signUp",
           formData,
           errors,
           user: req.session.user || null,
@@ -149,7 +149,7 @@ router.post("/signup", async (req, res) => {
       console.error("Error registering user:", error);
       errors.email = "Error registering user. Please try again.";
       res.render("main", {
-        content: "sign-up",
+        content: "signUp",
         formData,
         errors,
         user: req.session.user || null,
@@ -157,7 +157,7 @@ router.post("/signup", async (req, res) => {
     }
   } else {
     res.render("main", {
-      content: "sign-up",
+      content: "signUp",
       formData,
       errors,
       user: req.session.user || null,

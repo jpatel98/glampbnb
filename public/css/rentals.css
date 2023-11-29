@@ -18,8 +18,8 @@
   
   /* Style individual rental cards (rental-container) */
   .rental-container {
-    width: 48%; /* Adjust as needed to control column width */
-    margin: 1%; /* Adjust margin for spacing between cards */
+    width: 48%; 
+    margin: 1%; 
     border: 1px solid #ddd;
     padding: 10px;
     box-sizing: border-box;
@@ -29,12 +29,11 @@
   
   /* Style individual rental card content */
   .rental-container img {
-    max-width: 100%; /* Ensure images don't exceed their container */
+    max-width: 100%; 
   }
   
   .rental-container h3 {
     font-size: 1.2rem;
   }
   
-  /* Add more styles as needed to match your design */
   

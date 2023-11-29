@@ -44,7 +44,7 @@ router.get("/", async (req, res) => {
     const allRentals = await Rental.find({}).lean(); //.lean(), tells Mongoose to give the plain JS object.
     const groupedRentals = groupRentalsByCityAndProvince(allRentals);
 
-    console.log(groupedRentals);
+    // console.log(groupedRentals);
     // Render the 'main.ejs' template and pass rental data for the rentals page
     res.render("main", {
       content: "rentals",
@@ -59,17 +59,20 @@ router.get("/", async (req, res) => {
 
 
 // Route handler for the rentals list page ("/rentals/list")
-router.get(
-  "/list",
-  checkAuthenticated,
-  checkRole("Data Entry Clerk"),
-  (req, res) => {
+router.get("/list", checkAuthenticated, checkRole("Data Entry Clerk"), async (req, res) => {
+  try {
+    const rentals = await Rental.find({}).sort({ headline: 1 }).lean();
     res.render("main", {
-      content: "rentals-list",
+      content: "clerkDashboard",
+      rentals,
       user: req.session.user || null,
     });
+  } catch (error) {
+    console.error("Error fetching rentals:", error);
+    res.status(500).render("main", { content: "error", user: req.session.user || null });
   }
-);
+});
+
 
 function groupRentalsByCityAndProvince(rentals) {
   const groupedRentals = {};
