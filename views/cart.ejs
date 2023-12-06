@@ -1,47 +1,52 @@
-<!-- shopping-cart.ejs -->
-<div class="welcome">
-  <h1>Shopping Cart</h1>
-  <% if (cartItems && cartItems.length> 0) { %>
-    <div class="cart-items">
-      <% cartItems.forEach(item=> { %>
-        <div class="cart-item">
-          <img src="<%= item.rental.imageUrl %>" alt="<%= item.rental.headline %>" class="cart-item-image">
-          <div class="cart-item-details">
-            <h3>
-              <%= item.rental.headline %>
-            </h3>
-            <p>
-              <%= item.rental.city %>, <%= item.rental.province %>
-            </p>
-            <p>Price per night: $<%= item.rental.pricePerNight %>
-            </p>
-            <p>Total price: $<%= (item.rental.pricePerNight * item.numberOfNights).toFixed(2) %>
-            </p>
+<% function truncateToTwoDecimals(num) { return Math.floor(num * 100) / 100; } %>
 
-            <!-- Form to update number of nights -->
-            <form action="/cart/update/<%= item.rental._id %>" method="post">
-              <input type="number" name="numberOfNights" value="<%= item.numberOfNights %>" min="1">
-              <button type="submit">Update Nights</button>
-            </form>
+  <!-- shopping-cart.ejs -->
+  <div class="welcome">
+    <h1>Shopping Cart</h1>
+    <% if (cartItems && cartItems.length> 0) { %>
+      <div class="cart-items">
+        <% cartItems.forEach(item=> { %>
+          <div class="cart-item">
+            <img src="<%= item.rental.imageUrl %>" alt="<%= item.rental.headline %>" class="cart-item-image">
+            <div class="cart-item-details">
+              <h3>
+                <%= item.rental.headline %>
+              </h3>
+              <p>
+                <%= item.rental.city %>, <%= item.rental.province %>
+              </p>
+              <p>Price per night: $<%= item.rental.pricePerNight %>
+              </p>
+              <p>Total price: $$<%= truncateToTwoDecimals(item.rental.pricePerNight) %>
+              </p>
 
-            <!-- Link to remove item from cart -->
-            <a href="/cart/remove/<%= item.rental._id %>">Remove from Cart</a>
+              <!-- Form to update number of nights -->
+              <form action="/cart/update/<%= item.rental._id %>" method="post">
+                <input type="number" name="numberOfNights" value="<%= item.numberOfNights %>" min="1">
+                <button type="submit">Update Nights</button>
+              </form>
+
+              <!-- Link to remove item from cart -->
+              <a href="/cart/remove/<%= item.rental._id %>">Remove from Cart</a>
+            </div>
           </div>
-        </div>
-        <% }); %>
+          <% }); %>
 
-          <!-- Checkout Section -->
-          <div class="checkout-section">
-            <p>Subtotal: $<%= subtotal.toFixed(2) %>
-            </p>
-            <p>VAT (20%): $<%= (subtotal * 0.20).toFixed(2) %>
-            </p>
-            <p>Grand Total: $<%= (subtotal * 1.20).toFixed(2) %>
-            </p>
-            <button onclick="location.href='/checkout'">Place Order</button>
-          </div>
-    </div>
-    <% } else { %>
-      <p>Your cart is empty.</p>
-      <% } %>
-</div>
+            <!-- Checkout Section -->
+            <div class="checkout-section">
+              <p>Subtotal: $<%= truncateToTwoDecimals(subtotal) %>
+              </p>
+              <p>VAT (20%): $<%= truncateToTwoDecimals(subtotal * 0.20) %>
+              </p>
+              <p>Grand Total: $<%= truncateToTwoDecimals(subtotal * 1.20) %>
+              </p>
+              <!-- Place Order form -->
+              <form action="/checkout" method="post">
+                <button type="submit">Place Order</button>
+              </form>
+            </div>
+      </div>
+      <% } else { %>
+        <p>Your cart is empty.</p>
+        <% } %>
+  </div>

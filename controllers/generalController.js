@@ -362,4 +362,88 @@ router.post("/cart/add/:rentalId", checkAuthenticated, checkRole("Customer"), as
   }
 });
 
+// POST route to update number of nights for a rental in the cart
+router.post("/cart/update/:rentalId", checkAuthenticated, checkRole("Customer"), async (req, res) => {
+  try {
+    const numberOfNights = parseInt(req.body.numberOfNights);
+    if (numberOfNights < 1) throw new Error('Number of nights must be at least 1');
+
+    // Update the number of nights for the specific rental in the user's cart
+    await ShoppingCart.findOneAndUpdate(
+      { userId: req.session.user.id, 'rentals.rentalId': req.params.rentalId },
+      { $set: { 'rentals.$.numberOfNights': numberOfNights } }
+    );
+
+    res.redirect("/cart");
+  } catch (error) {
+    console.error("Error updating cart:", error);
+    res.status(500).send("Error updating cart");
+  }
+});
+
+// GET route to remove a rental from the cart
+router.get("/cart/remove/:rentalId", checkAuthenticated, checkRole("Customer"), async (req, res) => {
+  try {
+    // Remove the specific rental from the user's cart
+    await ShoppingCart.findOneAndUpdate(
+      { userId: req.session.user.id },
+      { $pull: { rentals: { rentalId: req.params.rentalId } } }
+    );
+
+    res.redirect("/cart");
+  } catch (error) {
+    console.error("Error removing item from cart:", error);
+    res.status(500).send("Error removing item from cart");
+  }
+});
+
+// POST route for checkout and sending order details via email
+router.post("/checkout", checkAuthenticated, checkRole("Customer"), async (req, res) => {
+  try {
+    // Retrieve the shopping cart for the current user
+    const cart = await ShoppingCart.findOne({ userId: req.session.user.id }).populate('rentals.rentalId');
+    if (!cart || cart.rentals.length === 0) {
+      return res.status(400).send("Shopping cart is empty.");
+    }
+
+    // Calculate subtotal, VAT, and total
+    let subtotal = 0;
+    cart.rentals.forEach(item => {
+      subtotal += item.numberOfNights * item.rentalId.pricePerNight;
+    });
+    const vat = subtotal * 0.20;
+    const total = subtotal + vat;
+
+    // Prepare email content
+    let emailContent = `Hello ${req.session.user.fname},\n\nHere are the details of your order:\n\n`;
+    cart.rentals.forEach(item => {
+      emailContent += `Rental: ${item.rentalId.headline}\nCity: ${item.rentalId.city}\nProvince: ${item.rentalId.province}\nNights: ${item.numberOfNights}\nPrice per night: $${item.rentalId.pricePerNight}\nTotal: $${(item.numberOfNights * item.rentalId.pricePerNight).toFixed(2)}\n\n`;
+    });
+    emailContent += `Subtotal: $${subtotal.toFixed(2)}\nVAT: $${vat.toFixed(2)}\nGrand Total: $${total.toFixed(2)}\n\nThank you for your order.`;
+
+    // Send email to the user
+    await mg.messages.create(process.env.MAILGUN_DOMAIN, {
+      from: "Glambnb <mailgun@sandbox-123.mailgun.org>",
+      to: req.session.user.email,
+      subject: "Your Glambnb Order Details",
+      text: emailContent
+    });
+
+    // Clear the shopping cart
+    await ShoppingCart.findOneAndUpdate(
+      { userId: req.session.user.id },
+      { $set: { rentals: [] } }
+    );
+
+    res.render("main", {
+      content: "orderConfirmation",
+      user: req.session.user || null,
+      message: "Your order has been placed successfully. A confirmation email has been sent."
+    });
+  } catch (error) {
+    console.error("Error during checkout:", error);
+    res.status(500).send("Error during checkout");
+  }
+});
+
 module.exports = router;
