@@ -77,9 +77,34 @@ router.get("/welcome", (req, res) => {
 });
 
 // Route handler for the cart ("/cart")
-router.get("/cart", checkAuthenticated, checkRole("Customer"), (req, res) => {
-  res.render("main", { content: "cart", user: req.session.user || null });
+router.get("/cart", checkAuthenticated, checkRole("Customer"), async (req, res) => {
+  try {
+    // Fetch cart for the current user
+    const cart = await ShoppingCart.findOne({ userId: req.session.user.id }).populate('rentals.rentalId');
+
+    // Prepare cart items for the view
+    let cartItems = [];
+    let subtotal = 0;
+    if (cart && cart.rentals) {
+      cartItems = cart.rentals.map(item => {
+        const total = item.numberOfNights * item.pricePerNight;
+        subtotal += total;
+        return { rental: item.rentalId, numberOfNights: item.numberOfNights, total: total };
+      });
+    }
+
+    res.render("main", {
+      content: "cart",
+      user: req.session.user || null,
+      cartItems: cartItems,
+      subtotal: subtotal
+    });
+  } catch (error) {
+    console.error("Error fetching cart:", error);
+    res.status(500).render("main", { content: "error", user: req.session.user || null });
+  }
 });
+
 
 // Route handler for the registration page ("/sign-up")
 router.get("/signup", (req, res) => {
@@ -319,7 +344,7 @@ router.post("/cart/add/:rentalId", checkAuthenticated, checkRole("Customer"), as
     const cart = await ShoppingCart.findOneAndUpdate(
       { userId: req.session.user.id },
       {
-        $push: { 
+        $push: {
           rentals: {
             rentalId: rental._id,
             numberOfNights: 1, // default to 1 night, can be adjusted later
