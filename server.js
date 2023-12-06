@@ -13,7 +13,8 @@
 const path = require("path");
 const rentalsDb = require("./models/rentals-db");
 const express = require("express");
-const session = require("express-session");
+// const session = require("express-session");
+const clientSessions = require("client-sessions");
 require("dotenv").config();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -22,13 +23,19 @@ const rentalController = require("./controllers/rentalsController");
 const loadDataController = require("./controllers/loadDataController");
 
 const app = express();
-app.use(
-  session({
-    secret: process.env.EXPRESS_SESSION_SECRET_KEY,
-    resave: false,
-    saveUninitialized: true,
-  })
-);
+// app.use(
+//   session({
+//     secret: process.env.EXPRESS_SESSION_SECRET_KEY,
+//     resave: false,
+//     saveUninitialized: true,
+//   })
+// );
+app.use(clientSessions({
+  cookieName: 'session', // cookie name,
+  secret: process.env.CLIENT_SESSION_SECRET_KEY, // long random string
+  duration: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+  activeDuration: 1000 * 60 * 5 // extend the session active duration by 5 minutes
+}));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
