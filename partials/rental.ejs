@@ -10,14 +10,19 @@
  *
  **************************************************************************************/ -->
  
-<div class="recommended__item">
+ <div class="recommended__item">
   <!-- Display rental information dynamically from the passed 'rental' object -->
   <img src="<%= rental.imageUrl %>" alt="<%= rental.headline %>" />
-  <!-- logging the url to see if it works -->
-  <!-- <p><%= rental.imageUrl %></p> -->
   <h3><%= rental.headline %></h3>
   <p>Sleeps: <%= rental.numSleeps %></p>
   <p>Bedrooms: <%= rental.numBedrooms %></p>
   <p>Bathrooms: <%= rental.numBathrooms %></p>
   <p>Price per night: $<%= rental.pricePerNight %></p>
+
+  <% if (user && user.role === 'Customer') { %>
+    <form action="/cart/add/<%= rental._id %>" method="post">
+      <button type="submit" style="padding-top: 5px; margin-top: 5px;">Rent</button>
+    </form>
+  <% } %>
 </div>
+
