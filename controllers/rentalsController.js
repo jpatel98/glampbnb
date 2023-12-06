@@ -68,6 +68,7 @@ const checkRole = (role) => {
   };
 };
 
+
 // Route handler for the rentals page ("/rentals")
 router.get("/", async (req, res) => {
   try {

@@ -19,7 +19,7 @@ const bcrypt = require("bcrypt");
 const UserModel = require("../models/userModel");
 // const rentalsDb = require("../models/rentals-db");
 const Rental = require('../models/rentalModel');
-
+const ShoppingCart = require('../models/shoppingCartModel');
 
 // Load environment variables
 const apiKey = process.env.MAILGUN_API_KEY;
@@ -52,7 +52,6 @@ const checkRole = (role) => {
   };
 };
 
-// Route handler for the home page ("/")
 // Route handler for the home page ("/")
 router.get("/", async (req, res) => {
   try {
@@ -307,5 +306,35 @@ function validateLoginForm(email, password) {
     errors,
   };
 }
+
+// route for adding to cart
+router.post("/cart/add/:rentalId", checkAuthenticated, checkRole("Customer"), async (req, res) => {
+  try {
+    const rental = await Rental.findById(req.params.rentalId);
+    if (!rental) {
+      return res.status(404).send("Rental not found");
+    }
+
+    // Add or update the rental in the user's shopping cart
+    const cart = await ShoppingCart.findOneAndUpdate(
+      { userId: req.session.user.id },
+      {
+        $push: { 
+          rentals: {
+            rentalId: rental._id,
+            numberOfNights: 1, // default to 1 night, can be adjusted later
+            pricePerNight: rental.pricePerNight
+          }
+        }
+      },
+      { new: true, upsert: true }
+    );
+
+    res.redirect("/cart");
+  } catch (error) {
+    console.error("Error adding rental to cart:", error);
+    res.status(500).send("Error adding rental to cart");
+  }
+});
 
 module.exports = router;
