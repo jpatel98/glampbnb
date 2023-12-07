@@ -23,9 +23,9 @@ const { v4: uuidv4 } = require('uuid');
 
 // Configure AWS and create S3 instance
 AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION || "ca-central-1",
+  accessKeyId: process.env.MY_AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.MY_AWS_SECRET_ACCESS_KEY,
+  region: process.env.MY_AWS_REGION || "us-east-1",
 });
 const s3 = new AWS.S3();
 
@@ -135,7 +135,7 @@ router.post(
     if (req.file && req.file.buffer) {
       const fileKey = `${uuidv4()}${path.extname(req.file.originalname)}`;
       const params = {
-        Bucket: process.env.CYCLIC_BUCKET_NAME, 
+        Bucket: process.env.MY_AWS_BUCKET_NAME, 
         Key: `uploads/${fileKey}`,
         Body: req.file.buffer,
         ContentType: req.file.mimetype,
