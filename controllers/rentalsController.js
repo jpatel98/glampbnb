@@ -135,7 +135,7 @@ router.post(
     if (req.file && req.file.buffer) {
       const fileKey = `${uuidv4()}${path.extname(req.file.originalname)}`;
       const params = {
-        Bucket: process.env.AWS_S3_BUCKET, 
+        Bucket: process.env.CYCLIC_BUCKET_NAME, 
         Key: `uploads/${fileKey}`,
         Body: req.file.buffer,
         ContentType: req.file.mimetype,
