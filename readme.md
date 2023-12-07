@@ -32,4 +32,10 @@ CLIENT_SESSION_SECRET_KEY="your_secret"
 `
 
 ## Note to professor
+
+#### Note 1
 Due to [mailgun limitation](https://help.mailgun.com/hc/en-us/articles/217531258-Authorized-Recipients) of sending emails to authorized recipients only, I have added nickroma.seneca@gmail.com as one of the recipient. Even after adding authorized recipient, Seneca's email is blocking the mailgun's provided domain for phising.
+
+#### Note 2
+I was having issues with maintaing the state of the logged-in user after deploying the app to cyclic. Once the user signed in, and the page redirected to /client or /rentals/list, it was rendering my 404 Page Not Found view, so I tried using client-sessions library as per [web322](https://webprogrammingtoolsandframeworks.sdds.ca/Managing-State-Information/introduction-to-client-sessions) notes and it started working fine.
+
