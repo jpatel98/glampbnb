@@ -28,7 +28,7 @@ MONGODB_CONNECTION_STRING="YOUR_MONGODB_STRING"
 `
 
 `
-EXPRESS_SESSION_SECRET_KEY="your_secret"
+CLIENT_SESSION_SECRET_KEY="your_secret"
 `
 
 ## Note to professor
