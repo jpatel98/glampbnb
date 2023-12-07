@@ -36,7 +36,7 @@
             </li>
           <% } else if (user.role === 'Data Entry Clerk') { %>
             <li class="navbar__list">
-              <a href="/rentals/list" class="<%= content === 'rentals-list' ? 'active-page' : '' %>">Welcome, <%= user.fname %></a>
+              <a href="/rentals/list" class="<%= content === 'clerkDashboard' ? 'active-page' : '' %>">Welcome, <%= user.fname %></a>
             </li>
           <% } %>
         <% } else { %>
