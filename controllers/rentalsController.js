@@ -18,32 +18,28 @@ const Rental = require("../models/rentalModel");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const { log } = require("console");
+const AWS = require("aws-sdk");
+const { v4: uuidv4 } = require('uuid');
+
+// Configure AWS and create S3 instance
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION || "ca-central-1",
+});
+const s3 = new AWS.S3();
 
 // Middleware to handle file uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public/assets/Images");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname)); 
-  },
-});
-
-// File filter for jpg, jpeg, gif, png
-const fileFilter = (req, file, cb) => {
-  if (
-    file.mimetype === "image/jpeg" ||
-    file.mimetype === "image/png" ||
-    file.mimetype === "image/gif"
-  ) {
-    cb(null, true);
-  } else {
-    cb(null, false);
+const upload = multer({
+  storage: multer.memoryStorage(),
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === "image/jpeg" || file.mimetype === "image/png" || file.mimetype === "image/gif") {
+      cb(null, true);
+    } else {
+      cb(null, false);
+    }
   }
-};
-
-const upload = multer({ storage: storage, fileFilter: fileFilter });
+});
 
 // Middleware to check if the user is logged in
 const checkAuthenticated = (req, res, next) => {
@@ -133,8 +129,30 @@ router.post(
   checkRole("Data Entry Clerk"),
   upload.single("imageUrl"),
   async (req, res) => {
-    const imageUrl = req.file ? `/assets/Images/${req.file.filename}` : '';
-    
+    // const imageUrl = req.file ? `/assets/Images/${req.file.filename}` : '';
+
+    let imageUrl = '';
+    if (req.file && req.file.buffer) {
+      const fileKey = `${uuidv4()}${path.extname(req.file.originalname)}`;
+      const params = {
+        Bucket: process.env.AWS_S3_BUCKET, 
+        Key: `uploads/${fileKey}`,
+        Body: req.file.buffer,
+        ContentType: req.file.mimetype,
+        ACL: 'public-read' 
+      };
+
+      try {
+        const uploadResult = await s3.upload(params).promise();
+        imageUrl = uploadResult.Location;
+      } catch (err) {
+        console.error("Error uploading file to S3:", err);
+        return res.status(500).render("main", {
+          content: "error",
+          user: req.session.user || null
+        });
+      }
+    }
     const newRental = new Rental({
       headline: req.body.headline,
       numSleeps: req.body.numSleeps,
@@ -159,7 +177,7 @@ router.post(
         content: "rental-add-form",
         user: req.session.user || null,
         errors: { message: "Failed to add rental. Please try again." },
-        formData: req.body, 
+        formData: req.body,
       });
     }
   }
@@ -218,7 +236,7 @@ router.post("/edit/:id", checkAuthenticated, checkRole("Data Entry Clerk"), uplo
     // Update the rental with new data
     await Rental.findByIdAndUpdate(req.params.id, {
       ...req.body,
-      imageUrl: imageUrl, 
+      imageUrl: imageUrl,
       featuredRental: req.body.featuredRental === 'on',
     }, { new: true, runValidators: true });
 
