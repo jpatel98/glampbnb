@@ -301,17 +301,14 @@ router.post("/login", async (req, res) => {
 });
 
 // Logout route
+// Logout route
 router.get("/logout", (req, res) => {
   // Clear the user session
-  req.session.destroy((err) => {
-    if (err) {
-      console.error("Error destroying session:", err);
-      return res.redirect("/");
-    }
-    // Redirect to the home page after successfully logging out
-    res.redirect("/login");
-  });
+  req.session.reset();
+  // Redirect to the home page after successfully logging out
+  res.redirect("/login");
 });
+
 
 function validateLoginForm(email, password) {
   const errors = {};
