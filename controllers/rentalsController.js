@@ -135,11 +135,11 @@ router.post(
     if (req.file && req.file.buffer) {
       const fileKey = `${uuidv4()}${path.extname(req.file.originalname)}`;
       const params = {
-        Bucket: process.env.MY_AWS_BUCKET_NAME, 
+        Bucket: process.env.MY_AWS_BUCKET_NAME,
         Key: `uploads/${fileKey}`,
         Body: req.file.buffer,
         ContentType: req.file.mimetype,
-        ACL: 'public-read' 
+        ACL: 'public-read'
       };
 
       try {
@@ -223,14 +223,33 @@ router.post("/edit/:id", checkAuthenticated, checkRole("Data Entry Clerk"), uplo
     }
 
     let imageUrl = rentalToUpdate.imageUrl;
-    if (req.file) {
-      // If a new file is uploaded, update the imageUrl
-      imageUrl = `/assets/Images/${req.file.filename}`;
+    if (req.file && req.file.buffer) {
+      // If a new file is uploaded, upload it to S3
+      const fileKey = `${uuidv4()}${path.extname(req.file.originalname)}`;
+      const params = {
+        Bucket: process.env.MY_AWS_BUCKET_NAME,
+        Key: `uploads/${fileKey}`,
+        Body: req.file.buffer,
+        ContentType: req.file.mimetype,
+        ACL: 'public-read'
+      };
 
-      const oldFilePath = path.join(__dirname, '..', 'public', rentalToUpdate.imageUrl);
-      fs.unlink(oldFilePath, (err) => {
-        if (err) console.error("Error deleting old image file:", err);
-      });
+      try {
+        const uploadResult = await s3.upload(params).promise();
+        imageUrl = uploadResult.Location;
+
+        // Delete old image from S3
+        const oldFileKey = extractKeyFromUrl(rentalToUpdate.imageUrl);
+        if (oldFileKey) {
+          await s3.deleteObject({ Bucket: process.env.MY_AWS_BUCKET_NAME, Key: oldFileKey }).promise();
+        }
+      } catch (err) {
+        console.error("Error uploading file to S3:", err);
+        return res.status(500).render("main", {
+          content: "error",
+          user: req.session.user || null
+        });
+      }
     }
 
     // Update the rental with new data
@@ -251,6 +270,13 @@ router.post("/edit/:id", checkAuthenticated, checkRole("Data Entry Clerk"), uplo
     });
   }
 });
+
+function extractKeyFromUrl(url) {
+  // Extract the S3 key from the file URL
+  // Adjust the logic based on your URL structure
+  const matches = url.match(/\/uploads\/(.+)$/);
+  return matches ? matches[1] : null;
+}
 
 // GET Route for Delete Rental Form ("/rentals/remove/:id")
 router.get(
