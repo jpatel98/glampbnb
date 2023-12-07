@@ -271,13 +271,6 @@ router.post("/edit/:id", checkAuthenticated, checkRole("Data Entry Clerk"), uplo
   }
 });
 
-function extractKeyFromUrl(url) {
-  // Extract the S3 key from the file URL
-  // Adjust the logic based on your URL structure
-  const matches = url.match(/\/uploads\/(.+)$/);
-  return matches ? matches[1] : null;
-}
-
 // GET Route for Delete Rental Form ("/rentals/remove/:id")
 router.get(
   "/remove/:id",
@@ -316,11 +309,14 @@ router.post(
     try {
       const rental = await Rental.findById(req.params.id);
       if (rental && rental.imageUrl) {
-        const filePath = path.join(__dirname, "..", "public", rental.imageUrl);
-        fs.unlink(filePath, (err) => {
-          if (err) console.error("Error deleting file:", err);
-        });
+        // Extract the S3 key from the URL
+        const fileKey = extractKeyFromUrl(rental.imageUrl);
+        if (fileKey) {
+          // Delete the file from S3
+          await s3.deleteObject({ Bucket: process.env.MY_AWS_BUCKET_NAME, Key: fileKey }).promise();
+        }
       }
+
       await Rental.deleteOne({ _id: req.params.id });
       res.redirect("/rentals/list");
     } catch (error) {
@@ -357,6 +353,13 @@ function groupRentalsByCityAndProvince(rentals) {
   });
 
   return Object.values(groupedRentals);
+}
+
+
+function extractKeyFromUrl(url) {
+  // Extract the S3 key from the file URL
+  const matches = url.match(/\/uploads\/(.+)$/);
+  return matches ? matches[1] : null;
 }
 
 module.exports = router;
