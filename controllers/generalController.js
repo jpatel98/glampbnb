@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const formData = require("form-data");
-const Mailgun = require("mailgun.js");
-const mailgun = new Mailgun(formData);
+// const Mailgun = require("mailgun.js");
+// const mailgun = new Mailgun(formData);
 const bcrypt = require("bcrypt");
 const UserModel = require("../models/userModel");
 // const rentalsDb = require("../models/rentals-db");
@@ -12,10 +12,10 @@ const ShoppingCart = require('../models/shoppingCartModel');
 // Load environment variables
 const apiKey = process.env.MAILGUN_API_KEY;
 const domain = process.env.MAILGUN_DOMAIN;
-const mg = mailgun.client({
-  username: "api",
-  key: process.env.MAILGUN_API_KEY,
-});
+// const mg = mailgun.client({
+//   username: "api",
+//   key: process.env.MAILGUN_API_KEY,
+// });
 
 // Middleware to check if the user is logged in
 const checkAuthenticated = (req, res, next) => {
@@ -436,6 +436,54 @@ router.get("/cart/remove/:rentalId", checkAuthenticated, checkRole("Customer"), 
 });
 
 // POST route for checkout and sending order details via email
+// router.post("/checkout", checkAuthenticated, checkRole("Customer"), async (req, res) => {
+//   try {
+//     // Retrieve the shopping cart for the current user
+//     const cart = await ShoppingCart.findOne({ userId: req.session.user.id }).populate('rentals.rentalId');
+//     if (!cart || cart.rentals.length === 0) {
+//       return res.status(400).send("Shopping cart is empty.");
+//     }
+
+//     // Calculate subtotal, VAT, and total
+//     let subtotal = 0;
+//     cart.rentals.forEach(item => {
+//       subtotal += item.numberOfNights * item.rentalId.pricePerNight;
+//     });
+//     const vat = subtotal * 0.20;
+//     const total = subtotal + vat;
+
+//     // Prepare email content
+//     let emailContent = `Hello ${req.session.user.fname},\n\nHere are the details of your order:\n\n`;
+//     cart.rentals.forEach(item => {
+//       emailContent += `Rental: ${item.rentalId.headline}\nCity: ${item.rentalId.city}\nProvince: ${item.rentalId.province}\nNights: ${item.numberOfNights}\nPrice per night: $${item.rentalId.pricePerNight}\nTotal: $${(item.numberOfNights * item.rentalId.pricePerNight).toFixed(2)}\n\n`;
+//     });
+//     emailContent += `Subtotal: $${subtotal.toFixed(2)}\nVAT: $${vat.toFixed(2)}\nGrand Total: $${total.toFixed(2)}\n\nThank you for your order.`;
+
+//     // Send email to the user
+//     await mg.messages.create(process.env.MAILGUN_DOMAIN, {
+//       from: "Glambnb <mailgun@sandbox-123.mailgun.org>",
+//       to: req.session.user.email,
+//       subject: "Your Glambnb Order Details",
+//       text: emailContent
+//     });
+
+//     // Clear the shopping cart
+//     await ShoppingCart.findOneAndUpdate(
+//       { userId: req.session.user.id },
+//       { $set: { rentals: [] } }
+//     );
+
+//     res.render("main", {
+//       content: "orderConfirmation",
+//       user: req.session.user || null,
+//       message: "Your order has been placed successfully."
+//     });
+//   } catch (error) {
+//     console.error("Error during checkout:", error);
+//     res.status(500).send("Error during checkout");
+//   }
+// });
+
 router.post("/checkout", checkAuthenticated, checkRole("Customer"), async (req, res) => {
   try {
     // Retrieve the shopping cart for the current user
@@ -452,20 +500,7 @@ router.post("/checkout", checkAuthenticated, checkRole("Customer"), async (req, 
     const vat = subtotal * 0.20;
     const total = subtotal + vat;
 
-    // Prepare email content
-    let emailContent = `Hello ${req.session.user.fname},\n\nHere are the details of your order:\n\n`;
-    cart.rentals.forEach(item => {
-      emailContent += `Rental: ${item.rentalId.headline}\nCity: ${item.rentalId.city}\nProvince: ${item.rentalId.province}\nNights: ${item.numberOfNights}\nPrice per night: $${item.rentalId.pricePerNight}\nTotal: $${(item.numberOfNights * item.rentalId.pricePerNight).toFixed(2)}\n\n`;
-    });
-    emailContent += `Subtotal: $${subtotal.toFixed(2)}\nVAT: $${vat.toFixed(2)}\nGrand Total: $${total.toFixed(2)}\n\nThank you for your order.`;
-
-    // Send email to the user
-    await mg.messages.create(process.env.MAILGUN_DOMAIN, {
-      from: "Glambnb <mailgun@sandbox-123.mailgun.org>",
-      to: req.session.user.email,
-      subject: "Your Glambnb Order Details",
-      text: emailContent
-    });
+    // No need to prepare and send email content
 
     // Clear the shopping cart
     await ShoppingCart.findOneAndUpdate(
@@ -483,5 +518,6 @@ router.post("/checkout", checkAuthenticated, checkRole("Customer"), async (req, 
     res.status(500).send("Error during checkout");
   }
 });
+
 
 module.exports = router;
