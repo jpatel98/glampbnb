@@ -1,7 +1,7 @@
 # [Glambnb Rental Management System](https://jade-sparkling-rhinoceros.cyclic.app)
 
 ## Overview
-Glambnb is a web-based application designed for managing rental properties. It allows users to view, add, edit, and delete rental listings. This system is specifically tailored for data entry clerks to manage rental properties and for customers to browse available rentals.
+Glambnb is your one stop shop for managing glamping properties. It allows users to view, add, edit, and delete listings. This system is specifically tailored for data entry clerks to manage properties and for customers to browse available glamping sites.
 
 ## Features
 - **User Authentication**: Supports user login and logout.
