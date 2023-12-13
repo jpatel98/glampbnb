@@ -423,7 +423,7 @@ router.post("/checkout", checkAuthenticated, checkRole("Customer"), async (req, 
     res.render("main", {
       content: "orderConfirmation",
       user: req.session.user || null,
-      message: "Your order has been placed successfully. A confirmation email has been sent."
+      message: "Your order has been placed successfully."
     });
   } catch (error) {
     console.error("Error during checkout:", error);
