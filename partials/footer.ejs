@@ -33,13 +33,12 @@
     </div>
   </div>
   <div class="footer__copyright">
-    <p>
-      By submitting this assignment I declare that this assignment is my own
-      work in accordance with the Seneca Academic Policy. No part of this
-      assignment has been copied manually or electronically from any other
-      source (including web sites) or distributed to other students.
-    </p>
-    <p>©Jigar Patel, jdpatel22@myseneca.ca, WEB322 Fall 2023</p>
+    <p>Copyright © <span id="current-year"></span> Jigar Patel </p>
   </div>
 </footer>
 <!-- End of Footer -->
+
+<script>
+  // JavaScript to dynamically add the current year
+  document.getElementById('current-year').textContent = new Date().getFullYear();
+</script>
