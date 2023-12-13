@@ -1,4 +1,4 @@
-# Glambnb Rental Management System
+# [Glambnb Rental Management System](https://jade-sparkling-rhinoceros.cyclic.app)
 
 ## Overview
 Glambnb is a web-based application designed for managing rental properties. It allows users to view, add, edit, and delete rental listings. This system is specifically tailored for data entry clerks to manage rental properties and for customers to browse available rentals.
@@ -17,13 +17,6 @@ Glambnb is a web-based application designed for managing rental properties. It a
 - **Multer** and **AWS SDK** for file uploads to S3.
 - **Client-sessions** for user session management.
 - **Bootstrap** for frontend styling.
-
-## Installation and Setup
-
-### Prerequisites
-- Node.js
-- MongoDB
-- AWS Account (for S3 Bucket)
 
 ## Project URLs
 Cyclic URL    : https://jade-sparkling-rhinoceros.cyclic.app
