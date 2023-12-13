@@ -106,6 +106,77 @@ router.get("/signup", (req, res) => {
   });
 });
 
+// router.post("/signup", async (req, res) => {
+//   const { fname, lname, email, password } = req.body;
+//   const validationResult = validateSignupForm(fname, lname, email, password);
+//   const errors = validationResult.errors || {};
+//   const formData = { fname, lname, email, password };
+
+//   if (validationResult.isValid) {
+//     try {
+//       const existingUser = await UserModel.findOne({ email });
+//       if (existingUser) {
+//         errors.email = "Email already exists. Please use a different email.";
+//         return res.render("main", {
+//           content: "signUp",
+//           formData,
+//           errors,
+//           user: req.session.user || null,
+//         });
+//       }
+
+//       const newUser = new UserModel({ fname, lname, email, password });
+//       await newUser.save();
+
+//       // Create a session for the new user after successful signup
+//       req.session.user = {
+//         id: newUser._id,
+//         email: newUser.email,
+//         role: newUser.role,
+//         fname: newUser.fname,
+//       };
+
+//       try {
+//         // Send an email to the user's email address
+//         await mg.messages.create(process.env.MAILGUN_DOMAIN, {
+//           from: "Glambnb <mailgun@sandbox-123.mailgun.org>",
+//           to: email,
+//           subject: "Welcome to our website",
+//           text: `Dear ${fname},\n\nWelcome to our website! Thank you for signing up!\n\nBest regards,\nJigar Patel\nGlambnb`,
+//           html: `<h1>Dear ${fname},</h1><p>Welcome to our website! Thank you for signing up!</p><p>Best regards,<br>Jigar Patel<br>Glambnb</p>`,
+//         });
+
+//         res.redirect("/welcome"); // Redirect to the welcome page
+//       } catch (error) {
+//         console.error("Error sending email:", error);
+//         errors.email = "Error sending email. Please try again later.";
+//         res.render("main", {
+//           content: "signUp",
+//           formData,
+//           errors,
+//           user: req.session.user || null,
+//         });
+//       }
+//     } catch (error) {
+//       console.error("Error registering user:", error);
+//       errors.email = "Error registering user. Please try again.";
+//       res.render("main", {
+//         content: "signUp",
+//         formData,
+//         errors,
+//         user: req.session.user || null,
+//       });
+//     }
+//   } else {
+//     res.render("main", {
+//       content: "signUp",
+//       formData,
+//       errors,
+//       user: req.session.user || null,
+//     });
+//   }
+// });
+
 router.post("/signup", async (req, res) => {
   const { fname, lname, email, password } = req.body;
   const validationResult = validateSignupForm(fname, lname, email, password);
@@ -128,7 +199,7 @@ router.post("/signup", async (req, res) => {
       const newUser = new UserModel({ fname, lname, email, password });
       await newUser.save();
 
-      // Create a session for the new user after successful signup
+      // Create a session for the new user and log them in automatically
       req.session.user = {
         id: newUser._id,
         email: newUser.email,
@@ -136,27 +207,8 @@ router.post("/signup", async (req, res) => {
         fname: newUser.fname,
       };
 
-      try {
-        // Send an email to the user's email address
-        await mg.messages.create(process.env.MAILGUN_DOMAIN, {
-          from: "Glambnb <mailgun@sandbox-123.mailgun.org>",
-          to: email,
-          subject: "Welcome to our website",
-          text: `Dear ${fname},\n\nWelcome to our website! Thank you for signing up!\n\nBest regards,\nJigar Patel\nGlambnb`,
-          html: `<h1>Dear ${fname},</h1><p>Welcome to our website! Thank you for signing up!</p><p>Best regards,<br>Jigar Patel<br>Glambnb</p>`,
-        });
-
-        res.redirect("/welcome"); // Redirect to the welcome page
-      } catch (error) {
-        console.error("Error sending email:", error);
-        errors.email = "Error sending email. Please try again later.";
-        res.render("main", {
-          content: "signUp",
-          formData,
-          errors,
-          user: req.session.user || null,
-        });
-      }
+      // Redirect to the desired page after successful signup and login
+      res.redirect("/welcome"); // or any other route you prefer
     } catch (error) {
       console.error("Error registering user:", error);
       errors.email = "Error registering user. Please try again.";
@@ -176,6 +228,7 @@ router.post("/signup", async (req, res) => {
     });
   }
 });
+
 
 function validateSignupForm(fname, lname, email, password) {
   const errors = {};
