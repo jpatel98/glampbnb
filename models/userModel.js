@@ -1,15 +1,3 @@
-/*************************************************************************************
- * WEB322 - 2237 Project
- * I declare that this assignment is my own work in accordance with the Seneca Academic
- * Policy. No part of this assignment has been copied manually or electronically from
- * any other source (including web sites) or distributed to other students.
- *
- * Student Name  : Jigar Patel
- * Student ID    : 118005172
- * Course/Section: WEB322 NEE
- *
- **************************************************************************************/
-
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
