@@ -16,7 +16,6 @@ Glambnb is your one stop shop for managing glamping properties. It allows users 
 - **MongoDB** with **Mongoose** for the database.
 - **Multer** and **AWS SDK** for file uploads to S3.
 - **Client-sessions** for user session management.
-- **Bootstrap** for frontend styling.
 
 ## Project URLs
 Cyclic URL    : https://jade-sparkling-rhinoceros.cyclic.app
